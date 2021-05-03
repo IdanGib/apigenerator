@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body, html {
+            font-family: sans-serif;
+            height: 100%;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>API</h1>
+    <div id="apis"></div>
+    <div>
+        <input type="text" id="apiname" placeholder="api name">
+        <textarea name="apicontent" id="apicontent" cols="30" rows="10"></textarea>
+        <button id="createbtn">create</button>
+    </div>
+    <script src="/index.js"></script>
+    <script>
+        function g(id) {
+            return document.getElementById(id);
+        }
+        const elements = {
+            apis: g('apis'),
+            fileName: g('apiname'),
+            fileContent: g('apicontent'),
+            createButton: g('createbtn')
+        };
+        const env = { url: `http://localhost:3000` };
+        api.init({ elements, env }).then(async api => {
+         
+            async function updateList() {
+                const { data } = await api.list();
+                elements.apis.innerHTML = data.map(d => (`<div>${d}</div>`)).join('');
+            }
+            updateList();
+
+
+
+            const { fileName, fileContent, createButton } = elements;
+            createButton.addEventListener('click', async event => {
+                const name = fileName.value;
+                const content = fileContent.value;
+                
+                if(name) {
+                    await api.create(name);
+                    updateList();
+                }
+
+                if(content) {
+                    await api.update(name, content);
+                }
+
+            });
+
+
+        }).catch(console.error);
+    </script>
+</body>
+</html>
