@@ -4,12 +4,9 @@ body, html {
     padding: 0;
     margin: 0;
 }
-h1 {
-    text-align: center;
-    padding: 0;
-    margin: 0;
+* {
+    box-sizing: border-box;
 }
-
 
 .app {
     display: grid;
@@ -17,26 +14,67 @@ h1 {
                             'list editor editor'
                             'footer footer footer';
     grid-template-rows: 50px auto 50px;
-    grid-template-columns: 100px auto;
+    grid-template-columns: 150px auto;
     height: 100%;
 }
 
 .app .list {
     grid-area: list;
-    background-color: yellow;
 }
 
 .app .editor {
+    font-size: large;
     grid-area: editor;
-    background-color: green;
+    display: flex;
+    flex-direction: column;
+    margin: 0 16px;
+}
+
+.app .editor textarea {
+    flex-grow: 1;
+    border: 1px solid gray;
+    border-radius: 8px;
+    outline: none;
+    padding: 16px;
+    font-size: larger;
+}
+.app .editor button {
+    cursor: pointer;
+}
+.app .create-api {
+    display: flex;
+    flex-wrap: wrap;
+}
+.app .editor input, .app .editor button {
+    align-self: flex-start;
+    margin: 8px 0;
+    border: none;
+    outline: none;
+    background-color: #eee;
+    padding: 4px;
+    border-radius: 4px;
+    font-size: large;
 }
 
 .app .header {
     grid-area: header;
-    background-color: violet;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-evenly;
+    font-size: larger;
+    font-weight: bold;
 }
 
 .app .footer {
     grid-area: footer;
-    background-color: turquoise;
+}
+
+.app .list .item {
+    padding: 8px;
+    cursor: pointer;
+    background-color: gray;
+    color: white;
+    margin: 6px;
+    border-radius: 8px;
 }

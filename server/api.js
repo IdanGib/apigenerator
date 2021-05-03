@@ -1,7 +1,6 @@
 const fs = require('fs');
 const apiPath = `${__dirname}/api`;
 module.exports = class API {
-    static installedApis = [];
     static apiRouter = null;
     static express = null;
 
@@ -69,17 +68,14 @@ module.exports = class API {
             return console.error(`invalid path: ${path}`);
         }
         apiRouter.use(`/${path}`, router);
-        this.installedApis.push(path);    
     }
 
     static install(app, express) {
-        this.installedApis.length = 0;
         const apiRouter = express.Router();
         this.express = express;
         if(!fs.existsSync(apiPath)) {
             return console.error('no api directory');
         }
-
 
         const files = fs.readdirSync(apiPath);
         for(const name of files) {
@@ -89,7 +85,7 @@ module.exports = class API {
 
     
         apiRouter.get('/installed', (req, res) => {
-            return res.json({ data: this.installedApis });
+            return res.json({ data: [] });
         });
 
         apiRouter.get('/read/:name', (req, res) => {
@@ -116,10 +112,12 @@ module.exports = class API {
         apiRouter.put('/update/:name', (req, res) => {
             const { name } = req.params;
             const { content } = req.body;
+            
             if(!name) {
                 return res.json({ err: 'no name', data: false });
             }
             const data = this.update(name, content);
+            this.installOne(this.express.Router(), this.apiRouter, name);
             return res.json({ err: '', data });
         });
 

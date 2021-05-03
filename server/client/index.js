@@ -17,7 +17,12 @@ window.api = (function() {
                     },
                     create: async (name) => {
                         const path = `${base}/create/${name}`;
-                        const result = await fetch(path, { method: 'post' });
+                        const result = await fetch(path, { 
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            method: 'post' 
+                        });
                         return await result.json();
                     },
                     read: async (name) => {
@@ -29,7 +34,10 @@ window.api = (function() {
                         const path = `${base}/update/${name}`;
                         const result = await fetch(path, { 
                             method: 'put',
-                            body: JSON.stringify(content)
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ content })
                         });
                         return await result.json();
                     },

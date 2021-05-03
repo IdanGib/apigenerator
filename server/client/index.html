@@ -9,54 +9,84 @@
 </head>
 <body>
     <div class='app'>
-        <h1 class='header'>API</h1>
-        <div class='list' id="apis"></div>
-        <div class='editor'>
-            <input type="text" id="apiname" placeholder="api name">
-            <textarea name="apicontent" id="apicontent" cols="30" rows="10"></textarea>
-            <button id="createbtn">create</button>
+        <div class='header'>API</div>
+        <div class='list'>
+            <div id="apis"></div>
+            <div class="create-api">
+                <button id="createbtn">create</button>
+                <input id="createname" type="text" id="apiname" placeholder="name" >
+            </div>
+   
         </div>
-        <div class='footer'>footer</div>
+        <div class='editor'>
+            <input type="text" id="updatename"  disabled>
+            <textarea  id="updatecontent" cols="30" rows="10"></textarea>
+            <div>
+                <button id="updatebtn">update</button>
+            </div>
+        </div>
+        <div class='footer'></div>
     </div>
 
-  
-
     <script src="/index.js"></script>
+
     <script>
         function g(id) {
             return document.getElementById(id);
         }
         const elements = {
             apis: g('apis'),
-            fileName: g('apiname'),
-            fileContent: g('apicontent'),
-            createButton: g('createbtn')
+
+            createbtn: g('createbtn'),
+            createname: g('createname'),
+
+            updatecontent: g('updatecontent'),
+            updatename: g('updatename'),
+            updatebtn: g('updatebtn')
         };
         const env = { url: `http://localhost:3000` };
+
         api.init({ elements, env }).then(async api => {
-         
+
+            const { apis, createbtn, updatecontent, updatebtn, updatename } = elements;
+
+
             async function updateList() {
                 const { data } = await api.list();
-                elements.apis.innerHTML = data.map(d => (`<div>${d}</div>`)).join('');
+       
+                const list = data.map(name => {
+                    const item = document.createElement('div');
+                    item.innerText = name;
+                    item.classList.add('item');
+                    item.onclick = async event => {
+                        const { data, err } = await api.read(name);
+                        updatecontent.value = data;
+                        updatename.value = name;
+                    }
+                    return item;  
+                });
+                apis.innerText = '';
+                for(const li of list) {
+                    apis.appendChild(li);
+                }
+
             }
+
             updateList();
 
+        
+            updatebtn.addEventListener('click', async event => {
+                const content = updatecontent.value;
+                const name =  updatename.value;              
+                const { data, err } = await api.update(name, content);
+            })
 
-
-            const { fileName, fileContent, createButton } = elements;
-            createButton.addEventListener('click', async event => {
-                const name = fileName.value;
-                const content = fileContent.value;
-                
+            createbtn.addEventListener('click', async event => {
+                const name = createname.value;
                 if(name) {
                     await api.create(name);
                     updateList();
                 }
-
-                if(content) {
-                    await api.update(name, content);
-                }
-
             });
 
 

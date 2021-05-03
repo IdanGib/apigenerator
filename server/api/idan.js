@@ -1,7 +1,7 @@
 
           module.exports = (router) => {
               router.get('/', (req, res) => {
-                  return res.send('idan');
+                  return res.send('kkk');
               });
               return router;
           }
