@@ -19,12 +19,12 @@ module.exports = class API {
         try {
           fd = fs.openSync(path, 'a');
           const content = `
-          module.exports = (router) => {
-              router.get('/', (req, res) => {
-                  return res.send('${name}');
-              });
-              return router;
-          }`;
+module.exports = (router) => {
+    router.get('/', (req, res) => {
+        return res.send('${name}');
+    });
+    return router;
+}`;
           fs.appendFileSync(fd, content, 'utf8');
         } catch (err) {
             console.error(err);
@@ -85,7 +85,7 @@ module.exports = class API {
 
     
         apiRouter.get('/installed', (req, res) => {
-            return res.json({ data: [] });
+            return res.json({ data: this.getRoutes(), err: null });
         });
 
         apiRouter.get('/read/:name', (req, res) => {
@@ -117,7 +117,7 @@ module.exports = class API {
                 return res.json({ err: 'no name', data: false });
             }
             const data = this.update(name, content);
-            this.installOne(this.express.Router(), this.apiRouter, name);
+
             return res.json({ err: '', data });
         });
 
@@ -132,8 +132,17 @@ module.exports = class API {
 
 
         this.apiRouter = apiRouter;
+        console.log(this.getRoutes());
         app.use('/api', apiRouter);
 
+    }
+
+    static getRoutes() {
+        if(!fs.existsSync(apiPath)) {
+            return [];
+        }
+        const apis = fs.readdirSync(apiPath);
+        return apis.map(a => a.split('.')[0]).filter(Boolean);
     }
 
 }
