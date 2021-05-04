@@ -23,7 +23,12 @@
                 <input type="text" id="updatename"  disabled>
                 <button id="updatebtn">update</button>
             </div>
-            <textarea resize="off" id="updatecontent" cols="30" rows="10"></textarea>
+            <textarea 
+                spellCheck="false" 
+                id="updatecontent" 
+                cols="30" 
+                rows="10">
+            </textarea>
 
         </div>
         <div class="global">
@@ -115,8 +120,8 @@
             async function getDependencies() {
                 const json = await api.package();
                 const deps = Object.keys(json.dependencies);
-                console.log(deps);
-                dependencies.innerHTML = deps.map(d => `<div>${d}</div>`).join('');
+                const depsHTML = deps.map(d => `<div>${d}</div>`).join('');
+                dependencies.innerHTML = depsHTML;
             }
     
             async function updateView() {
@@ -135,6 +140,7 @@
                 const name = createname.value;
                 if(name) {
                     await api.create(name);
+                    createname.value = '';
                     updateView();
                 }
             });
