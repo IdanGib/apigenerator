@@ -8,11 +8,11 @@ module.exports = class API {
         const path = `${apiPath}/${name}.js`;
 
         if(!fs.existsSync(apiPath)) {
-            return console.error(`${apiPath} not exsits`);
+            return console.error(`[create] ${apiPath} not exsits`);
         }
 
         if(fs.existsSync(path)) {
-            return console.error(`${name} allready exsits`);
+            return console.error(`[create] ${name} allready exsits`);
         }
         
         let fd;
@@ -38,7 +38,7 @@ module.exports = (router) => {
     static read(name) {
         const path = `${apiPath}/${name}.js`;
         if(!fs.existsSync(path)) {
-            console.error(`${path} not exsits`);
+            console.error(`[read] ${path} not exsits`);
             return null;
         }
         return fs.readFileSync(path);
@@ -47,7 +47,7 @@ module.exports = (router) => {
     static delete(name) {
         const path = `${apiPath}/${name}.js`;
         if(!fs.existsSync(path)) {
-            return console.error(`${path} not exsits`);
+            return console.error(`[delete] ${path} not exsits`);
         }
         return fs.rmSync(path, { force: true });
     }
@@ -55,7 +55,7 @@ module.exports = (router) => {
     static update(name, content) {
         const path = `${apiPath}/${name}.js`;
         if(!fs.existsSync(path)) {
-            return console.error(`${path} not exsits`);
+            return console.error(`[update] ${path} not exsits`);
         }
         return fs.writeFileSync(path, content);
     }
@@ -132,7 +132,7 @@ module.exports = (router) => {
 
 
         this.apiRouter = apiRouter;
-        console.log(this.getRoutes());
+        
         app.use('/api', apiRouter);
 
     }

@@ -16,7 +16,6 @@
                 <button id="createbtn">create</button>
                 <input id="createname" type="text" id="apiname" placeholder="name" >
             </div>
-   
         </div>
         <div class='editor'>
             <input type="text" id="updatename"  disabled>
@@ -48,7 +47,13 @@
 
         api.init({ elements, env }).then(async api => {
 
-            const { apis, createbtn, updatecontent, updatebtn, updatename } = elements;
+            const { 
+                apis, 
+                createbtn, 
+                updatecontent, 
+                updatebtn, 
+                updatename 
+            } = elements;
 
 
             async function updateList() {
@@ -60,9 +65,20 @@
                     item.classList.add('item');
                     item.onclick = async event => {
                         const { data, err } = await api.read(name);
-                        updatecontent.value = data;
+                        updatecontent.value = data || '';
                         updatename.value = name;
                     }
+                    const removebtn = document.createElement('button');
+                    removebtn.innerText = 'delete';
+                    removebtn.onclick = async event => {
+                        const res = await api.delete(name);
+                        console.log(`${name} deleted`, res);
+                        updateList();
+                        event.stopPropagation();
+                        event.preventDefault();
+                        return true;
+                    };
+                    item.appendChild(removebtn);
                     return item;  
                 });
                 apis.innerText = '';
@@ -75,20 +91,19 @@
             updateList();
 
         
-            updatebtn.addEventListener('click', async event => {
+            updatebtn?.addEventListener('click', async event => {
                 const content = updatecontent.value;
                 const name =  updatename.value;              
                 const { data, err } = await api.update(name, content);
             })
 
-            createbtn.addEventListener('click', async event => {
+            createbtn?.addEventListener('click', async event => {
                 const name = createname.value;
                 if(name) {
                     await api.create(name);
                     updateList();
                 }
             });
-
 
         }).catch(console.error);
     </script>
