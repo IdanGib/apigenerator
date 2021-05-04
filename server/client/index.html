@@ -55,6 +55,18 @@
                 updatename 
             } = elements;
 
+            async function editor(name, content) {
+                updatecontent.value = content;
+                updatename.value = name;
+            }
+
+            async function loadApiItem(name) {
+                const { data, err } = await api.read(name);
+                const content = data || '';
+                editor(name, content);
+            }
+
+        
 
             async function updateList() {
                 const { data } = await api.list();
@@ -63,21 +75,20 @@
                     const item = document.createElement('div');
                     item.innerText = name;
                     item.classList.add('item');
-                    item.onclick = async event => {
-                        const { data, err } = await api.read(name);
-                        updatecontent.value = data || '';
-                        updatename.value = name;
-                    }
+
+                    const open = document.createElement('button');
+                    open.innerText = 'open';
+                    open.onclick = async event => {
+                        await loadApiItem(name);
+                    };
+
                     const removebtn = document.createElement('button');
                     removebtn.innerText = 'delete';
                     removebtn.onclick = async event => {
-                        const res = await api.delete(name);
-                        console.log(`${name} deleted`, res);
-                        updateList();
-                        event.stopPropagation();
-                        event.preventDefault();
-                        return true;
+                        await api.delete(name);
+                        updateView();
                     };
+                    item.appendChild(open);
                     item.appendChild(removebtn);
                     return item;  
                 });
@@ -88,8 +99,11 @@
 
             }
 
-            updateList();
-
+    
+            async function updateView() {
+                await updateList();
+                editor('', '');
+            }
         
             updatebtn?.addEventListener('click', async event => {
                 const content = updatecontent.value;
@@ -101,10 +115,10 @@
                 const name = createname.value;
                 if(name) {
                     await api.create(name);
-                    updateList();
+                    updateView();
                 }
             });
-
+            updateView();
         }).catch(console.error);
     </script>
 </body>

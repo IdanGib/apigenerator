@@ -14,7 +14,7 @@ body, html {
                             'list editor editor'
                             'footer footer footer';
     grid-template-rows: 50px auto 50px;
-    grid-template-columns: 150px auto;
+    grid-template-columns: 200px auto;
     height: 100%;
 }
 
@@ -44,7 +44,13 @@ body, html {
 .app .create-api {
     display: flex;
     flex-wrap: wrap;
+    margin: 8px;
 }
+
+.app .create-api input {
+    max-width: fit-content;
+}
+
 .app .editor input, .app .editor button {
     align-self: flex-start;
     margin: 8px 0;
@@ -81,4 +87,8 @@ body, html {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+}
+
+#updatebtn {
+    padding: 8px;
 }
