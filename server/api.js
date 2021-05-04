@@ -131,6 +131,10 @@ module.exports = (router) => {
         });
 
 
+        apiRouter.get('/package', (req, res) => {
+            return res.sendFile(`${__dirname}/package.json`);
+        });
+
         this.apiRouter = apiRouter;
         
         app.use('/api', apiRouter);

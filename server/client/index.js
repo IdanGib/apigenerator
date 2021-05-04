@@ -45,6 +45,11 @@ window.api = (function() {
                         const path = `${base}/delete/${name}`;
                         const result = await fetch(path, { method: 'delete' });
                         return await result.json();
+                    },
+                    package: async () => {
+                        const path = `${base}/package`;
+                        const result = await fetch(path);
+                        return await result.json();
                     }
                 };
                 resolve(window.api);

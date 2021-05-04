@@ -21,16 +21,21 @@ button {
 input {
     text-indent: 4px;
 }
+
+.global {
+    grid-area: global;
+}
+
 button, input {
     padding: 4px 6px;
 }
 .app {
     display: grid;
     grid-template-areas:    'header header header'
-                            'list editor editor'
+                            'list editor global'
                             'footer footer footer';
     grid-template-rows: 50px auto 50px;
-    grid-template-columns: 200px auto;
+    grid-template-columns: 200px auto 200px;
     height: 100%;
 }
 

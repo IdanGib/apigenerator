@@ -26,6 +26,12 @@
             <textarea resize="off" id="updatecontent" cols="30" rows="10"></textarea>
 
         </div>
+        <div class="global">
+            <div>
+                <h3>dependencies</h3>
+                <div id='dependencies'></div>
+            </div>
+        </div>
         <div class='footer'></div>
     </div>
 
@@ -37,10 +43,11 @@
         }
         const elements = {
             apis: g('apis'),
-
+            dependencies: g('dependencies'),
             createbtn: g('createbtn'),
             createname: g('createname'),
-
+            pkg: g('pkg'),
+            pkgcontent: g('pkg-content'),
             updatecontent: g('updatecontent'),
             updatename: g('updatename'),
             updatebtn: g('updatebtn')
@@ -50,7 +57,8 @@
         api.init({ elements, env }).then(async api => {
 
             const { 
-                apis, 
+                apis,
+                dependencies,
                 createbtn, 
                 updatecontent, 
                 updatebtn, 
@@ -68,7 +76,7 @@
                 editor(name, content);
             }
 
-        
+            
 
             async function updateList() {
                 const { data } = await api.list();
@@ -104,10 +112,17 @@
 
             }
 
+            async function getDependencies() {
+                const json = await api.package();
+                const deps = Object.keys(json.dependencies);
+                console.log(deps);
+                dependencies.innerHTML = deps.map(d => `<div>${d}</div>`).join('');
+            }
     
             async function updateView() {
                 await updateList();
                 editor('', '');
+                getDependencies();
             }
         
             updatebtn?.addEventListener('click', async event => {
@@ -123,6 +138,7 @@
                     updateView();
                 }
             });
+
             updateView();
         }).catch(console.error);
     </script>
