@@ -20,9 +20,6 @@ input {
     text-indent: 4px;
 }
 
-.global {
-    grid-area: global;
-}
 
 button, input {
     padding: 4px 6px;
@@ -37,8 +34,7 @@ button, input {
     height: 100%;
 }
 .CodeMirror {
-    border-radius: var(--border-radius);
-    border: 1px solid #aaa;
+   
 }
 .app .list {
     grid-area: list;
@@ -51,25 +47,45 @@ button, input {
     margin: 0 16px;
 }
 
-.app .editor textarea {
-    flex-grow: 1;
-    border: 1px solid gray;
+.app .editor .CodeMirror {
+    border: 1px solid #aaa;
     border-radius: var(--border-radius);
-    outline: none;
-    padding: 16px;
+    height: 100%;
     font-size: larger;
-    resize: none;
+}
+.app .global {
+    border: 1px solid #aaa;
+    border-radius: var(--border-radius);
+    margin: 4px;
+    padding: 0 8px;
+    grid-area: global;
+    display: flex;
+    flex-direction: column;
+}
+.app .global .dependencies {
+    flex-grow: 1;
 }
 
+.app .global .npm-install {
+    text-align: center;
+    padding: 8px;
+}
+
+h3 {
+    margin: 8px 0;
+    border-bottom: 1px solid #aaa;
+    padding-bottom: 4px;
+}
 .app .create-api {
     display: flex;
     flex-wrap: wrap;
     margin: 8px;
     border: 1px solid #aaa;
+    border-radius: var(--border-radius);
     padding: 8px;
     flex-direction: row;
     justify-content: space-between;
-    border-radius: var(--border-radius);
+
 }
 
 .app .create-api input {

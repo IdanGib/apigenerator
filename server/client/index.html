@@ -45,9 +45,12 @@
             <textarea id="updatecontent" ></textarea>
         </div>
         <div class="global">
-            <div>
+            <div class="dependencies">
                 <h3>dependencies</h3>
                 <div id='dependencies'></div>
+            </div>
+            <div class="npm-install">
+                <button id="npminstall">npm install</button>
             </div>
         </div>
         <div class='footer'></div>
@@ -69,7 +72,8 @@
             updatecontent: g('updatecontent'),
             updatename: g('updatename'),
             updatebtn: g('updatebtn'),
-            saveLoader: g('saveloader')
+            saveLoader: g('saveloader'),
+            npminstall: g('npminstall')
         };
         const env = { url: `http://localhost:3000` };
 
@@ -82,9 +86,12 @@
                 updatecontent, 
                 updatebtn, 
                 updatename,
-                saveLoader
+                saveLoader,
+                npminstall
             } = elements;
+
             let current = '';
+            
             async function save() {
                 saveLoader.innerText = 'saving...';
                 const content = codeMirror.getValue();
