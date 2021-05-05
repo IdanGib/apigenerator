@@ -6,6 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API</title>
     <link rel="stylesheet" href="index.css">
+ 
+    <link rel="stylesheet" href="lib/codemirror-5.61.0/lib/codemirror.css">
+    <link rel="stylesheet" href="lib/codemirror-5.61.0/addon/hint/show-hint.css">
+
+    <script src="lib/codemirror-5.61.0/lib/codemirror.js"></script>
+    <script src="lib/codemirror-5.61.0/addon/hint/show-hint.js"></script>
+    <script src="lib/codemirror-5.61.0/addon/hint/javascript-hint.js"></script>
+    <script src="lib/codemirror-5.61.0/addon/edit/closebrackets.js"></script>
+    <script src="lib/codemirror-5.61.0/mode/javascript/javascript.js"></script>
+
+
+    
 </head>
 <body>
     <div class='app'>
@@ -23,13 +35,13 @@
                 <input type="text" id="updatename"  disabled>
                 <button id="updatebtn">update</button>
             </div>
-            <textarea 
+            <!--textarea 
                 spellCheck="false" 
                 id="updatecontent" 
                 cols="30" 
                 rows="10">
-            </textarea>
-
+            </textarea -->
+            <textarea id="updatecontent" ></textarea>
         </div>
         <div class="global">
             <div>
@@ -67,11 +79,18 @@
                 createbtn, 
                 updatecontent, 
                 updatebtn, 
-                updatename 
+                updatename
             } = elements;
 
+            const codeMirror = CodeMirror.fromTextArea(updatecontent, {
+                mode:  "javascript",
+                lineNumbers: true,
+                autoCloseBrackets: true,
+                autocorrect: true,
+                extraKeys: {"Ctrl-Space": "autocomplete"}
+            });
             async function editor(name, content) {
-                updatecontent.value = content;
+                codeMirror.setValue(content);
                 updatename.value = name;
             }
 
@@ -131,8 +150,8 @@
             }
         
             updatebtn?.addEventListener('click', async event => {
-                const content = updatecontent.value;
-                const name =  updatename.value;              
+                const content = codeMirror.getValue();
+                const name =  updatename.value;   
                 const { data, err } = await api.update(name, content);
             })
 
@@ -146,6 +165,9 @@
             });
 
             updateView();
+
+
+
         }).catch(console.error);
     </script>
 </body>

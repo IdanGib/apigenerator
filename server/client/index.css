@@ -38,7 +38,10 @@ button, input {
     grid-template-columns: 200px auto 200px;
     height: 100%;
 }
-
+.CodeMirror {
+    border-radius: var(--border-radius);
+    border: 1px solid #aaa;
+}
 .app .list {
     grid-area: list;
 }

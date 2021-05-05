@@ -31,6 +31,9 @@ window.api = (function() {
                         return await result.json();
                     },
                     update: async (name, content) => {
+                        if(!content || !name) {
+                            return { data: '', err: 'missing data' };
+                        }
                         const path = `${base}/update/${name}`;
                         const result = await fetch(path, { 
                             method: 'put',
