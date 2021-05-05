@@ -47,7 +47,10 @@
         <div class="global">
             <div class="dependencies">
                 <h3>dependencies</h3>
-                <div id='dependencies'></div>
+                <div id="dependencies"></div>
+                <div class="npmpackage">
+                    <input type="text" placeholder="npm package" id="npmpackage">
+                </div>
             </div>
             <div class="npm-install">
                 <button id="npminstall">npm install</button>
@@ -73,7 +76,8 @@
             updatename: g('updatename'),
             updatebtn: g('updatebtn'),
             saveLoader: g('saveloader'),
-            npminstall: g('npminstall')
+            npminstall: g('npminstall'),
+            npmpackage: g('npmpackage')
         };
         const env = { url: `http://localhost:3000` };
 
@@ -91,7 +95,7 @@
             } = elements;
 
             let current = '';
-            
+
             async function save() {
                 saveLoader.innerText = 'saving...';
                 const content = codeMirror.getValue();

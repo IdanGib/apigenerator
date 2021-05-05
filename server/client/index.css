@@ -16,14 +16,16 @@ button {
     border-radius: var(--border-radius);
 }
 
-input {
-    text-indent: 4px;
-}
-
-
 button, input {
     padding: 4px 6px;
 }
+
+input {
+    border: 1px solid #aaa;
+    border-radius: var(--border-radius);
+    outline: none;
+}
+
 .app {
     display: grid;
     grid-template-areas:    'header header header'
@@ -33,9 +35,7 @@ button, input {
     grid-template-columns: 200px auto 200px;
     height: 100%;
 }
-.CodeMirror {
-   
-}
+
 .app .list {
     grid-area: list;
 }
@@ -64,6 +64,14 @@ button, input {
 }
 .app .global .dependencies {
     flex-grow: 1;
+}
+
+.app .global .dependencies #dependencies > * {
+    margin-top: 8px;
+}
+
+.app .global .npmpackage {
+    margin: 16px 0;
 }
 
 .app .global .npm-install {
