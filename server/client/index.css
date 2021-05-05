@@ -11,9 +11,7 @@ body, html {
 
 button {
     cursor: pointer;
-    border: none;
-    background-color: #aaa;
-    color: white;
+    border: 1px solid #aaa;
     margin: 0 2px;
     border-radius: var(--border-radius);
 }
@@ -79,7 +77,6 @@ button, input {
     width: 0;
     margin-right: 4px;
     border: 1px solid #aaa;
-
     border-radius: var(--border-radius);
     outline: none;
     text-indent: 4px;
@@ -88,10 +85,8 @@ button, input {
 .app .editor input {
     align-self: flex-start;
     margin: 8px 0;
-    border: none;
+    border: 1px solid #aaa;
     outline: none;
-    background-color: #aaa;
-    color: white;
     border-radius: var(--border-radius);
 }
 
@@ -112,10 +107,9 @@ button, input {
 .app .list .item {
     padding: 8px;
     cursor: pointer;
-    background-color: gray;
-    color: white;
     margin: 6px;
     border-radius: var(--border-radius);
+    border: 1px solid #aaa;
     display: flex;
     flex-direction: row;
     align-items: center;

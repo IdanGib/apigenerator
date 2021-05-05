@@ -33,7 +33,8 @@
         <div class='editor'>
             <div calss='editor-header'>
                 <input type="text" id="updatename"  disabled>
-                <button id="updatebtn">update</button>
+                <button id="updatebtn" disabled>save</button>
+                <span id="saveloader"></span>
             </div>
             <!--textarea 
                 spellCheck="false" 
@@ -67,7 +68,8 @@
             pkgcontent: g('pkg-content'),
             updatecontent: g('updatecontent'),
             updatename: g('updatename'),
-            updatebtn: g('updatebtn')
+            updatebtn: g('updatebtn'),
+            saveLoader: g('saveloader')
         };
         const env = { url: `http://localhost:3000` };
 
@@ -79,16 +81,36 @@
                 createbtn, 
                 updatecontent, 
                 updatebtn, 
-                updatename
+                updatename,
+                saveLoader
             } = elements;
+            let current = '';
+            async function save() {
+                saveLoader.innerText = 'saving...';
+                const content = codeMirror.getValue();
+                const name =  updatename.value;   
+                const { data, err } = await api.update(name, content);
+                saveLoader.innerText = '';
+                current = codeMirror.getValue();
+            }
 
             const codeMirror = CodeMirror.fromTextArea(updatecontent, {
                 mode:  "javascript",
                 lineNumbers: true,
                 autoCloseBrackets: true,
                 autocorrect: true,
-                extraKeys: {"Ctrl-Space": "autocomplete"}
+                extraKeys: {
+                    "Ctrl-Space": "autocomplete", 
+                    "Ctrl-S": save,
+                }
             });
+
+            codeMirror.on('change', (cm, data) => {
+                const changed = current !== cm.getValue();
+                const action = changed ? 'removeAttribute' :  'setAttribute';
+                updatebtn[action]('disabled', '');
+            });
+
             async function editor(name, content) {
                 codeMirror.setValue(content);
                 updatename.value = name;
@@ -97,10 +119,9 @@
             async function loadApiItem(name) {
                 const { data, err } = await api.read(name);
                 const content = data || '';
+                current = content;
                 editor(name, content);
             }
-
-            
 
             async function updateList() {
                 const { data } = await api.list();
@@ -149,11 +170,9 @@
                 getDependencies();
             }
         
-            updatebtn?.addEventListener('click', async event => {
-                const content = codeMirror.getValue();
-                const name =  updatename.value;   
-                const { data, err } = await api.update(name, content);
-            })
+            
+
+            updatebtn?.addEventListener('click', save);
 
             createbtn?.addEventListener('click', async event => {
                 const name = createname.value;
