@@ -1,4 +1,5 @@
 # apigenerator
 create api from client application
-* `npm install`
-* `npm run dev`
+### start application:
+1. `npm install`
+2. `npm run dev`
