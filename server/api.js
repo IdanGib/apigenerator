@@ -1,5 +1,7 @@
 const fs = require('fs');
 const apiPath = `${__dirname}/api`;
+const templatesPath = `${__dirname}/templates/api.template`;
+
 module.exports = class API {
     static apiRouter = null;
     static express = null;
@@ -18,13 +20,7 @@ module.exports = class API {
         let fd;
         try {
           fd = fs.openSync(path, 'a');
-          const content = `
-module.exports = (router) => {
-    router.get('/', (req, res) => {
-        return res.send('${name}');
-    });
-    return router;
-}`;
+          const content = require(templatesPath)(name);
           fs.appendFileSync(fd, content, 'utf8');
         } catch (err) {
             console.error(err);
@@ -62,12 +58,26 @@ module.exports = (router) => {
 
     static installOne(newRouter, apiRouter, name) {
         const filePath = `${apiPath}/${name}`;
-        const router = require(filePath)(newRouter);
+        const apiPlugin = require(filePath);
+        if(typeof apiPlugin !== 'function') {
+            return console.error(`${name} not export a function`);
+        }
+        
+        const router = apiPlugin(newRouter);
         const path = name.split('.')[0];
+
         if(!path) {
             return console.error(`invalid path: ${path}`);
         }
-        apiRouter.use(`/${path}`, router);
+
+        if(router) {
+            try {
+                apiRouter.use(`/${path}`, router);
+            } catch(e) {
+                console.error(e.message);
+            }
+  
+        }
     }
 
     static install(app, express) {
