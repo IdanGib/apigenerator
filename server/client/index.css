@@ -14,16 +14,22 @@ button {
     border: 1px solid #aaa;
     margin: 0 2px;
     border-radius: var(--border-radius);
+    padding: 4px 8px;
 }
-
-button, input {
-    padding: 4px 6px;
-}
-
 input {
+    text-indent: 6px;
+    padding: 4px 0;
     border: 1px solid #aaa;
     border-radius: var(--border-radius);
     outline: none;
+}
+
+input::placeholder {
+    text-transform: capitalize;
+}
+
+button, input {
+    font-family: monospace;
 }
 
 .app {
@@ -79,11 +85,12 @@ input {
     padding: 8px;
 }
 
-h3 {
+h4 {
     margin: 8px 0;
     border-bottom: 1px solid #aaa;
     padding-bottom: 4px;
 }
+
 .app .create-api {
     display: flex;
     flex-wrap: wrap;
