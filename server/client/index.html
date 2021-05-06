@@ -49,11 +49,11 @@
                 <h4>Dependencies</h4>
                 <div id="dependencies"></div>
                 <div class="npmpackage">
-                    <input type="text" placeholder="npm package" id="npmpackage">
+                    <input type="text" placeholder="npm package" id="npmpackagename">
                 </div>
             </div>
             <div class="npm-install">
-                <button id="npminstall">npm install</button>
+                <button id="npminstallbtn">npm install</button>
             </div>
         </div>
         <div class='footer'></div>
@@ -76,8 +76,8 @@
             updatename: g('updatename'),
             updatebtn: g('updatebtn'),
             saveLoader: g('saveloader'),
-            npminstall: g('npminstall'),
-            npmpackage: g('npmpackage')
+            npminstallbtn: g('npminstallbtn'),
+            npmpackagename: g('npmpackagename')
         };
         const env = { url: `http://localhost:3000` };
 
@@ -91,7 +91,8 @@
                 updatebtn, 
                 updatename,
                 saveLoader,
-                npminstall
+                npminstallbtn,
+                npmpackagename
             } = elements;
 
             let current = '';
@@ -181,7 +182,23 @@
                 getDependencies();
             }
         
-            
+            async function installPackage(packageName) {
+                console.log('installPackage: ', packageName);
+                const { data } = await api.install(packageName);
+                console.log('installPackage: ', data);
+                return data;
+            }
+
+            npminstallbtn?.addEventListener('click', async event => {
+                const name = npmpackagename.value;
+                if(!name) {
+                    return console.error('no npm package name');
+                }
+                const result = await installPackage(name);
+                console.log('click', result);
+                updateView();
+ 
+            });
 
             updatebtn?.addEventListener('click', save);
 

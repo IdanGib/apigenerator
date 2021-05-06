@@ -53,6 +53,17 @@ window.api = (function() {
                         const path = `${base}/package`;
                         const result = await fetch(path);
                         return await result.json();
+                    },
+                    install: async (name) => {
+                        const path = `${base}/installpackage`;
+                        const result = await fetch(path, { 
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            method: 'post',
+                            body: JSON.stringify({ name })
+                        });
+                        return await result.json();
                     }
                 };
                 resolve(window.api);

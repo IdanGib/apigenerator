@@ -1,162 +1,72 @@
-const fs = require('fs');
-const apiPath = `${__dirname}/api`;
-const templatesPath = `${__dirname}/templates/api.template`;
 
-module.exports = class API {
-    static apiRouter = null;
-    static express = null;
+const config = require('./config.json');
+const child_process = require('child_process');
+const apiFiles = require('./api.files');
 
-    static create(name) {
-        const path = `${apiPath}/${name}.js`;
+module.exports = (express) => {
+    const router = express.Router();
+    router.get('/installed', (req, res) => {
+        const data = apiFiles.list({ withFileType: false });
+        const err = null;
+        return res.json({ data, err });
+    });
 
-        if(!fs.existsSync(apiPath)) {
-            return console.error(`[create] ${apiPath} not exsits`);
+    router.get('/read/:name', (req, res) => {
+        const { name } = req.params;
+        let data = '';
+        if(!name) {
+            return res.json({ data, err: 'no name' });
         }
+        const buffer = apiFiles.read(name);
+        data = buffer?.toString();
+        return res.json({ data, err: '' });
+    });
 
-        if(fs.existsSync(path)) {
-            return console.error(`[create] ${name} allready exsits`);
+    router.post('/create/:name', (req, res) => {
+        const { name } = req.params;
+        if(!name) {
+            return res.json({ err: 'no name', data: false });
         }
+        const data = apiFiles.create(name);
+        return res.json({ err: '', data });
+    });
+
+    router.put('/update/:name', (req, res) => {
+        const { name } = req.params;
+        const { content } = req.body;
+        if(!name) {
+            return res.json({ err: 'no name', data: false });
+        }
+        const data = apiFiles.update(name, content);
+        return res.json({ err: '', data });
+    });
+
+    router.delete('/delete/:name', (req, res) => {
+        const { name } = req.params;
+        if(!name) {
+            return res.json({ err: 'no name', data: false });
+        }
+        const data = apiFiles.remove(name);
+        return res.json({ err: '', data });
+    });
+
+
+    router.get('/package', (req, res) => {
+        return res.sendFile(`${__dirname}/package.json`);
+    });
+
+    router.post('/installpackage', (req, res) => {
+        const { name } = req.body;
+        const err = {};
         
-        let fd;
-        try {
-          fd = fs.openSync(path, 'a');
-          const content = require(templatesPath)(name);
-          fs.appendFileSync(fd, content, 'utf8');
-        } catch (err) {
-            console.error(err);
-          return null;
-        } finally {
-          if (fd !== undefined)
-            fs.closeSync(fd);
+        if(!config.allowPackages.includes(name)) {
+            return console.error(`${name} - forbidden package`);
         }
-    }
+        const command =  `npm install --save ${name}`;
+        const { output } = child_process.spawnSync(command, { cwd: `${__dirname}`, shell: true });
+        const data =  output.map(o => o.toString());
+        return res.json({ data, err });
+    });
 
-    static read(name) {
-        const path = `${apiPath}/${name}.js`;
-        if(!fs.existsSync(path)) {
-            console.error(`[read] ${path} not exsits`);
-            return null;
-        }
-        return fs.readFileSync(path);
-    }
-
-    static delete(name) {
-        const path = `${apiPath}/${name}.js`;
-        if(!fs.existsSync(path)) {
-            return console.error(`[delete] ${path} not exsits`);
-        }
-        return fs.rmSync(path, { force: true });
-    }
-
-    static update(name, content) {
-        const path = `${apiPath}/${name}.js`;
-        if(!fs.existsSync(path)) {
-            return console.error(`[update] ${path} not exsits`);
-        }
-        return fs.writeFileSync(path, content);
-    }
-
-    static installOne(newRouter, apiRouter, name) {
-        const filePath = `${apiPath}/${name}`;
-        const apiPlugin = require(filePath);
-        if(typeof apiPlugin !== 'function') {
-            return console.error(`${name} not export a function`);
-        }
-        
-        const router = apiPlugin(newRouter);
-        const path = name.split('.')[0];
-
-        if(!path) {
-            return console.error(`invalid path: ${path}`);
-        }
-
-        if(router) {
-            try {
-                apiRouter.use(`/${path}`, router);
-            } catch(e) {
-                console.error(e.message);
-            }
-  
-        }
-    }
-
-    static install(app, express) {
-        const apiRouter = express.Router();
-        this.express = express;
-        if(!fs.existsSync(apiPath)) {
-            return console.error('no api directory');
-        }
-
-        const files = fs.readdirSync(apiPath);
-        for(const name of files) {
-            const newRouter = express.Router();
-            this.installOne(newRouter, apiRouter, name);
-        }
-
-    
-        apiRouter.get('/installed', (req, res) => {
-            return res.json({ data: this.getRoutes(), err: null });
-        });
-
-        apiRouter.get('/read/:name', (req, res) => {
-            const { name } = req.params;
-            let data = '';
-            if(!name) {
-                return res.json({ data, err: 'no name' });
-            }
-            const buffer = this.read(name);
-            data = buffer?.toString();
-            return res.json({ data, err: '' });
-        });
-
-        apiRouter.post('/create/:name', (req, res) => {
-            const { name } = req.params;
-            if(!name) {
-                return res.json({ err: 'no name', data: false });
-            }
-            const data = this.create(name);
-            this.installOne(this.express.Router(), this.apiRouter, name);
-            return res.json({ err: '', data });
-        });
-
-        apiRouter.put('/update/:name', (req, res) => {
-            const { name } = req.params;
-            const { content } = req.body;
-            
-            if(!name) {
-                return res.json({ err: 'no name', data: false });
-            }
-            const data = this.update(name, content);
-
-            return res.json({ err: '', data });
-        });
-
-        apiRouter.delete('/delete/:name', (req, res) => {
-            const { name } = req.params;
-            if(!name) {
-                return res.json({ err: 'no name', data: false });
-            }
-            const data = this.delete(name);
-            return res.json({ err: '', data });
-        });
-
-
-        apiRouter.get('/package', (req, res) => {
-            return res.sendFile(`${__dirname}/package.json`);
-        });
-
-        this.apiRouter = apiRouter;
-        
-        app.use('/api', apiRouter);
-
-    }
-
-    static getRoutes() {
-        if(!fs.existsSync(apiPath)) {
-            return [];
-        }
-        const apis = fs.readdirSync(apiPath);
-        return apis.map(a => a.split('.')[0]).filter(Boolean);
-    }
-
+    return router;
 }
