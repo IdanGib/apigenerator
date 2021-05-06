@@ -4,8 +4,10 @@ module.exports = class ApiFiles {
     static apiPath = `${__dirname}/api`;
     static templatesPath = `${__dirname}/templates/api.template`;
     
-    static exists() {
-        return fs.existsSync(this.apiPath);
+    static exists(path) {
+        const check = `${this.apiPath}${path ? '/' + path + '.js' : ''}`;
+        console.log(check);
+        return fs.existsSync(check);
     }
 
     static create(name) {

@@ -2,6 +2,7 @@
 const config = require('./config.json');
 const child_process = require('child_process');
 const apiFiles = require('./api.files');
+const PORT = process.env.PORT || config.port;
 
 module.exports = (express) => {
     const router = express.Router();
@@ -58,6 +59,18 @@ module.exports = (express) => {
     router.get('/allow-packages', (req, res) => {
         const data = config.allowPackages;
         const err = null;
+        return res.json({ data, err });
+    });
+
+    router.get('/url/:name', (req, res) => {
+        const { name } = req.params;
+        let data = null;
+        let err = null;
+        if(name && apiFiles.exists(name)) {
+            data = `http://localhost:${PORT}/api/${name}`;
+        } else {
+            err = { msg: 'not exists: ' + name};
+        }
         return res.json({ data, err });
     });
 

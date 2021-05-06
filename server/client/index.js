@@ -117,7 +117,7 @@ api.init({ elements, env }).then(async api => {
         const package = event.target?.dataset?.value;
         if(package) {
             const value = codeMirror.getValue();
-            const varname = package.replace('-', '_');
+            const varname = package.replaceAll('-', '_');
             const canAdd = value && (!value.includes(`require('${package}')`));
             if(canAdd) {
                 codeMirror.setValue( `const ${varname} = require('${package}');\n${value}`);

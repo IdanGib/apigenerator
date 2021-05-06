@@ -1,5 +1,6 @@
 const express = require('express');
-const PORT = process.env.PORT || 3000;
+const config = require('./config.json');
+const PORT = process.env.PORT || config.port;
 const { urlencoded, json } = require('body-parser');
 const Installer = require('./installer');
 
