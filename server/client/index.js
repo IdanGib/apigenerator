@@ -8,7 +8,7 @@ const elements = {
     createname: g('createname'),
     pkg: g('pkg'),
     pkgcontent: g('pkg-content'),
-    updatecontent: g('updatecontent'),
+    codeediitor: g('codeediitor'),
     updatename: g('updatename'),
     updatebtn: g('updatebtn'),
     saveLoader: g('saveloader'),
@@ -24,7 +24,7 @@ api.init({ elements, env }).then(async api => {
         apis,
         dependencies,
         createbtn, 
-        updatecontent, 
+        codeediitor, 
         updatebtn, 
         updatename,
         saveLoader,
@@ -61,9 +61,11 @@ api.init({ elements, env }).then(async api => {
                     }
                 }
                 li.innerText = item;
-                element.appendChild(li);
+                ul.appendChild(li);
             });
+            element.appendChild(ul);
         }
+
         return element;
     }
     
@@ -94,7 +96,7 @@ api.init({ elements, env }).then(async api => {
         selected = name;
     }
 
-    const codeMirror = CodeMirror.fromTextArea(updatecontent, {
+    const codeMirror = CodeMirror(codeediitor, {
         mode:  "javascript",
         lineNumbers: true,
         autoCloseBrackets: true,

@@ -8,10 +8,6 @@ body, html {
 
 }
 
-* {
-    box-sizing: border-box;
-}
-
 button {
     cursor: pointer;
     border: 1px solid var(--border-color);
@@ -57,34 +53,45 @@ button, input {
     display: flex;
     flex-direction: column;
 }
-.app .editor .editor-header {
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-}
+
 .app .editor .CodeMirror {
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    height: 100%;
+    flex-grow: 1;
     font-size: larger;
 }
-.app .global {
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    padding: 0 8px;
-    grid-area: global;
+
+.app .editor .code-editor #codeediitor {
+    height: 100%;
+    max-height: 100%;
+    overflow: auto;
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
 }
-.app .list #apis {
+
+.app .editor .code-editor {
+    height: 100%;
+    max-height: max-content;
+    overflow: auto;
+}
+
+.app .box {
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
+    box-sizing: border-box;
+    margin: 4px;
+    padding: 6px;
 }
+.app .global {
+    grid-area: global;
+}
+
 textarea {
     opacity: 0;
 }
-.app .global .dependencies {
-    flex-grow: 1;
+.app ul {
     list-style: none;
+    padding: 0 4px;
+    margin: 0;
 }
 
 .app .global .dependencies .dep {
@@ -96,58 +103,37 @@ textarea {
 .app .global .dependencies .dep:hover {
     background: #eee;
 }
-.app .global .npmpackage {
-    margin: 16px 0;
-}
 
 .app .global .npm-install {
     text-align: center;
-    padding: 8px;
-}
-
-h4 {
-    margin: 8px 0;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 4px;
 }
 
 .app .create-api {
     display: flex;
     flex-wrap: wrap;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
     padding: 8px;
     flex-direction: row;
     justify-content: space-between;
-
+    border-bottom: 1px solid var(--border-color);
 }
 
 .app .create-api input {
     flex-grow: 1;
     width: 0;
     margin-right: 4px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    outline: none;
     text-indent: 4px;
-}
-
-.app .editor input {
-    align-self: flex-start;
-    margin: 8px 0;
-    border: 1px solid var(--border-color);
-    outline: none;
-    border-radius: var(--border-radius);
 }
 
 .app .header {
     grid-area: header;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-evenly;
-    font-size: larger;
-    font-weight: bold;
+}
+
+.app .header .title {
+    text-align: center;
+    font-size: 24px;
+    line-height: 50px;
+    height: 50px;
+    margin: auto;
 }
 
 .app .footer {
@@ -166,5 +152,5 @@ h4 {
 }
 
 .app .list .item:hover {
-    background-color: #ccc;
+    background-color: #eee;
 }

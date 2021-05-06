@@ -21,40 +21,44 @@
 </head>
 <body>
     <div class='app'>
-        <div class='header'>API</div>
+        <div class='header'><div class="title">API</div></div>
         <div class='list'>
-
-            <div class="create-api">
-                <input id="createname" type="text" placeholder="api name" >
-                <button id="createbtn">create</button>
+            <div class="box">
+                <div class="create-api">
+                    <input id="createname" type="text" placeholder="api name" >
+                    <button id="createbtn">create</button>
+                </div>
+                <div id="apis"></div>
             </div>
-            <div id="apis"></div>
         </div>
         <div class='editor'>
-            <div class='editor-header'>
+            <div class='editor-header box'>
                 <input type="text" id="updatename"  disabled>
                 <button id="updatebtn" disabled>save</button>
                 <span id="saveloader"></span>
             </div>
-            <textarea id="updatecontent" ></textarea>
+            <div class="code-editor box" style="padding: 0;">
+                <div id="codeediitor"></div>
+            </div>
         </div>
         <div class="global">
-            <div class="dependencies">
-                <h4>Dependencies</h4>
+            <div class="dependencies box">
+                <div><strong>Dependencies</strong></div>
                 <div id="dependencies"></div>
                 <div class="npmpackage">
                     <input type="text" placeholder="npm package" id="npmpackagename">
                 </div>
-                <div class="allow-section">
-                    <h4>Allow packages</h4>
-                    <div id="allowpackages"></div>
+                <div class="npm-install">
+                    <button id="npminstallbtn">npm install</button>
                 </div>
             </div>
-            <div class="npm-install">
-                <button id="npminstallbtn">npm install</button>
+            <div class="allow-section box">
+                <div><strong>Allow packages</strong></div>
+                <div id="allowpackages"></div>
             </div>
+           
         </div>
-        <div class='footer'></div>
+        <div class='footer box'></div>
     </div>
     <script src="/api.js"></script>
     <script src="/index.js"></script>
