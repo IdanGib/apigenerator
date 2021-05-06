@@ -55,6 +55,12 @@ module.exports = (express) => {
         return res.sendFile(`${__dirname}/package.json`);
     });
 
+    router.get('/allow-packages', (req, res) => {
+        const data = config.allowPackages;
+        const err = null;
+        return res.json({ data, err });
+    });
+
     router.post('/installpackage', (req, res) => {
         const { name } = req.body;
         const err = {};

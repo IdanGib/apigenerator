@@ -25,7 +25,7 @@
         <div class='list'>
 
             <div class="create-api">
-                <input id="createname" type="text" id="apiname" placeholder="api name" >
+                <input id="createname" type="text" placeholder="api name" >
                 <button id="createbtn">create</button>
             </div>
             <div id="apis"></div>
@@ -36,12 +36,6 @@
                 <button id="updatebtn" disabled>save</button>
                 <span id="saveloader"></span>
             </div>
-            <!--textarea 
-                spellCheck="false" 
-                id="updatecontent" 
-                cols="30" 
-                rows="10">
-            </textarea -->
             <textarea id="updatecontent" ></textarea>
         </div>
         <div class="global">
@@ -51,6 +45,10 @@
                 <div class="npmpackage">
                     <input type="text" placeholder="npm package" id="npmpackagename">
                 </div>
+                <div class="allow-section">
+                    <h4>Allow packages</h4>
+                    <div id="allowpackages"></div>
+                </div>
             </div>
             <div class="npm-install">
                 <button id="npminstallbtn">npm install</button>
@@ -58,164 +56,7 @@
         </div>
         <div class='footer'></div>
     </div>
-
+    <script src="/api.js"></script>
     <script src="/index.js"></script>
-
-    <script>
-        function g(id) {
-            return document.getElementById(id);
-        }
-        const elements = {
-            apis: g('apis'),
-            dependencies: g('dependencies'),
-            createbtn: g('createbtn'),
-            createname: g('createname'),
-            pkg: g('pkg'),
-            pkgcontent: g('pkg-content'),
-            updatecontent: g('updatecontent'),
-            updatename: g('updatename'),
-            updatebtn: g('updatebtn'),
-            saveLoader: g('saveloader'),
-            npminstallbtn: g('npminstallbtn'),
-            npmpackagename: g('npmpackagename')
-        };
-        const env = { url: `http://localhost:3000` };
-
-        api.init({ elements, env }).then(async api => {
-
-            const { 
-                apis,
-                dependencies,
-                createbtn, 
-                updatecontent, 
-                updatebtn, 
-                updatename,
-                saveLoader,
-                npminstallbtn,
-                npmpackagename
-            } = elements;
-
-            let current = '';
-
-            async function save() {
-                saveLoader.innerText = 'saving...';
-                const content = codeMirror.getValue();
-                const name =  updatename.value;   
-                const { data, err } = await api.update(name, content);
-                saveLoader.innerText = '';
-                current = codeMirror.getValue();
-            }
-
-            const codeMirror = CodeMirror.fromTextArea(updatecontent, {
-                mode:  "javascript",
-                lineNumbers: true,
-                autoCloseBrackets: true,
-                autocorrect: true,
-                extraKeys: {
-                    "Ctrl-Space": "autocomplete", 
-                    "Ctrl-S": save,
-                }
-            });
-
-            codeMirror.on('change', (cm, data) => {
-                const changed = current !== cm.getValue();
-                const action = changed ? 'removeAttribute' :  'setAttribute';
-                updatebtn[action]('disabled', '');
-            });
-
-            async function editor(name, content) {
-                codeMirror.setValue(content);
-                updatename.value = name;
-            }
-
-            async function loadApiItem(name) {
-                const { data, err } = await api.read(name);
-                const content = data || '';
-                current = content;
-                editor(name, content);
-            }
-
-            async function updateList() {
-                const { data } = await api.list();
-       
-                const list = data.map(name => {
-                    const item = document.createElement('div');
-                    item.innerText = name;
-                    item.classList.add('item');
-
-                    const open = document.createElement('button');
-                    open.innerText = 'open';
-                    open.onclick = async event => {
-                        await loadApiItem(name);
-                    };
-
-                    const removebtn = document.createElement('button');
-                    removebtn.innerText = 'delete';
-                    removebtn.onclick = async event => {
-                        await api.delete(name);
-                        updateView();
-                    };
-                    const actions = document.createElement('div');
-
-                    actions.appendChild(open);
-                    actions.appendChild(removebtn);
-                    item.appendChild(actions);
-                    return item;  
-                });
-                apis.innerText = '';
-                for(const li of list) {
-                    apis.appendChild(li);
-                }
-
-            }
-
-            async function getDependencies() {
-                const json = await api.package();
-                const deps = Object.keys(json.dependencies);
-                const depsHTML = deps.map(d => `<div>${d}</div>`).join('');
-                dependencies.innerHTML = depsHTML;
-            }
-    
-            async function updateView() {
-                await updateList();
-                editor('', '');
-                getDependencies();
-            }
-        
-            async function installPackage(packageName) {
-                console.log('installPackage: ', packageName);
-                const { data } = await api.install(packageName);
-                console.log('installPackage: ', data);
-                return data;
-            }
-
-            npminstallbtn?.addEventListener('click', async event => {
-                const name = npmpackagename.value;
-                if(!name) {
-                    return console.error('no npm package name');
-                }
-                const result = await installPackage(name);
-                console.log('click', result);
-                updateView();
- 
-            });
-
-            updatebtn?.addEventListener('click', save);
-
-            createbtn?.addEventListener('click', async event => {
-                const name = createname.value;
-                if(name) {
-                    await api.create(name);
-                    createname.value = '';
-                    updateView();
-                }
-            });
-
-            updateView();
-
-
-
-        }).catch(console.error);
-    </script>
 </body>
 </html>

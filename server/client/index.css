@@ -70,12 +70,18 @@ button, input {
 }
 .app .global .dependencies {
     flex-grow: 1;
+    list-style: none;
 }
 
-.app .global .dependencies #dependencies > * {
-    margin-top: 8px;
-}
+.app .global .dependencies .dep {
+    margin-top: 4px;
+    padding: 4px;
+    cursor: pointer;
 
+}
+.app .global .dependencies .dep:hover {
+    background: #eee;
+}
 .app .global .npmpackage {
     margin: 16px 0;
 }

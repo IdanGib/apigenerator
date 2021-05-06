@@ -11,8 +11,8 @@ module.exports = class ApiFiles {
     static create(name) {
         const path = `${this.apiPath}/${name}.js`;
 
-        if(!fs.existsSync(this.path)) {
-            return console.error(`[create] ${this.path} not exsits`);
+        if(!fs.existsSync(this.apiPath)) {
+            return console.error(`[create] ${this.apiPath} not exsits`);
         }
 
         if(fs.existsSync(path)) {
