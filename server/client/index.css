@@ -4,14 +4,17 @@ body, html {
     padding: 0;
     margin: 0;
     --border-radius: 8px;
+    --border-color: #ccc;
+
 }
+
 * {
     box-sizing: border-box;
 }
 
 button {
     cursor: pointer;
-    border: 1px solid #aaa;
+    border: 1px solid var(--border-color);
     margin: 0 2px;
     border-radius: var(--border-radius);
     padding: 4px 8px;
@@ -19,7 +22,7 @@ button {
 input {
     text-indent: 6px;
     padding: 4px 0;
-    border: 1px solid #aaa;
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     outline: none;
 }
@@ -45,28 +48,39 @@ button, input {
 .app .list {
     grid-area: list;
 }
+.gap {
+    grid-area: gap;
+}
 
 .app .editor {
     grid-area: editor;
     display: flex;
     flex-direction: column;
-    margin: 0 16px;
 }
-
+.app .editor .editor-header {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
 .app .editor .CodeMirror {
-    border: 1px solid #aaa;
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     height: 100%;
     font-size: larger;
 }
 .app .global {
-    border: 1px solid #aaa;
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
-    margin: 4px;
     padding: 0 8px;
     grid-area: global;
     display: flex;
     flex-direction: column;
+}
+.app .list #apis {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+textarea {
+    opacity: 0;
 }
 .app .global .dependencies {
     flex-grow: 1;
@@ -93,15 +107,14 @@ button, input {
 
 h4 {
     margin: 8px 0;
-    border-bottom: 1px solid #aaa;
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 4px;
 }
 
 .app .create-api {
     display: flex;
     flex-wrap: wrap;
-    margin: 8px;
-    border: 1px solid #aaa;
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     padding: 8px;
     flex-direction: row;
@@ -113,7 +126,7 @@ h4 {
     flex-grow: 1;
     width: 0;
     margin-right: 4px;
-    border: 1px solid #aaa;
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     outline: none;
     text-indent: 4px;
@@ -122,7 +135,7 @@ h4 {
 .app .editor input {
     align-self: flex-start;
     margin: 8px 0;
-    border: 1px solid #aaa;
+    border: 1px solid var(--border-color);
     outline: none;
     border-radius: var(--border-radius);
 }
@@ -145,10 +158,13 @@ h4 {
     padding: 8px;
     cursor: pointer;
     margin: 6px;
-    border-radius: var(--border-radius);
-    border: 1px solid #aaa;
+    border-left: 2px solid #ccc;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+}
+
+.app .list .item:hover {
+    background-color: #ccc;
 }
