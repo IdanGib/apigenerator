@@ -182,14 +182,17 @@ api.init({ elements, env }).then(async api => {
     }
 
     npminstallbtn?.addEventListener('click', async event => {
+     
         const name = npmpackagename.value;
         if(!name) {
-            return console.error('no npm package name');
+            return console.error('empty name');
         }
+        event.target.setAttribute('disabled', '');
         const result = await installPackage(name);
         console.log('click', result);
+        npmpackagename.value = '';
         updateView();
-
+        event.target.removeAttribute('disabled');
     });
 
     updatebtn?.addEventListener('click', save);

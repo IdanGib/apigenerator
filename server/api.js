@@ -78,21 +78,22 @@ module.exports = (express) => {
     router.post('/installpackage', async (req, res) => {
         const { name } = req.body;
         const err = {};
-        const data = null;
-        
-        if(!name) {
-            return console.error(`${name} - no name`);
+        let data = null;
+        try {
+            const npmreg = await axios.get(`${config.urls['npm-registry']}/${name}`);
+            if(npmreg.error) {
+                console.error(npmreg.error);
+                err['msg'] = 'not a npm package';
+            } else {
+                const command =  `npm install --save ${name}`;
+                const { output } = child_process.spawnSync(command, { cwd: `${__dirname}`, shell: true });
+                data =  output.map(o => o?.toString()).filter(Boolean);
+            }
+        } catch(e) {
+            console.error(e.message);
+            err['msg'] = 'not a npm package';
         }
-
-        const npmreg = await axios.get(`${config.urls['npm-registry']}/${name}`);
-        if(npmreg.error) {
-            console.error(npmreg.error);
-        }
-        /*
-        const command =  `npm install --save ${name}`;
-        const { output } = child_process.spawnSync(command, { cwd: `${__dirname}`, shell: true });
-        data =  output.map(o => o.toString());
-        */
+        console.log({ data, err });
         return res.json({ data, err });
     });
 
