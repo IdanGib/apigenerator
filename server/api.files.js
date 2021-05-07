@@ -6,7 +6,6 @@ module.exports = class ApiFiles {
     
     static exists(path) {
         const check = `${this.apiPath}${path ? '/' + path + '.js' : ''}`;
-        console.log(check);
         return fs.existsSync(check);
     }
 

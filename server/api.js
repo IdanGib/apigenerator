@@ -3,6 +3,7 @@ const config = require('./config.json');
 const child_process = require('child_process');
 const apiFiles = require('./api.files');
 const PORT = process.env.PORT || config.port;
+const axios = require('axios');
 
 module.exports = (express) => {
     const router = express.Router();
@@ -67,23 +68,31 @@ module.exports = (express) => {
         let data = null;
         let err = null;
         if(name && apiFiles.exists(name)) {
-            data = `http://localhost:${PORT}/api/${name}`;
+            data = `${config.urls.host}:${PORT}/api/${name}`;
         } else {
             err = { msg: 'not exists: ' + name};
         }
         return res.json({ data, err });
     });
 
-    router.post('/installpackage', (req, res) => {
+    router.post('/installpackage', async (req, res) => {
         const { name } = req.body;
         const err = {};
+        const data = null;
         
-        if(!config.allowPackages.includes(name)) {
-            return console.error(`${name} - forbidden package`);
+        if(!name) {
+            return console.error(`${name} - no name`);
         }
+
+        const npmreg = await axios.get(`${config.urls['npm-registry']}/${name}`);
+        if(npmreg.error) {
+            console.error(npmreg.error);
+        }
+        /*
         const command =  `npm install --save ${name}`;
         const { output } = child_process.spawnSync(command, { cwd: `${__dirname}`, shell: true });
-        const data =  output.map(o => o.toString());
+        data =  output.map(o => o.toString());
+        */
         return res.json({ data, err });
     });
 

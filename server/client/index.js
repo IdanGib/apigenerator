@@ -13,8 +13,7 @@ const elements = {
     updatebtn: g('updatebtn'),
     saveLoader: g('saveloader'),
     npminstallbtn: g('npminstallbtn'),
-    npmpackagename: g('npmpackagename'),
-    allowpackages: g('allowpackages')
+    npmpackagename: g('npmpackagename')
 };
 const env = { url: `http://localhost:3000` };
 
@@ -29,18 +28,11 @@ api.init({ elements, env }).then(async api => {
         updatename,
         saveLoader,
         npminstallbtn,
-        npmpackagename,
-        allowpackages
+        npmpackagename
     } = elements;
 
     let current = '';
     let selected = '';
-
-    async function getAllowPackages() {
-        const { data } = await api.allowPackages();
-        return data;
-    }
-
 
     async function appendList({ element, list, itemClass, listClass, attrs }) {
         if(element) {
@@ -68,14 +60,7 @@ api.init({ elements, env }).then(async api => {
 
         return element;
     }
-    
-    getAllowPackages().then(list => {
-        appendList({ 
-            element: allowpackages, 
-            list, 
-            itemClass: 'allow-package', 
-            listClass: 'allows' });
-    });
+
 
     async function save() {
         saveLoader.innerText = 'saving...';
