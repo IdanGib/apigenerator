@@ -1,0 +1,3 @@
+window.codeEditor = (async () => {
+    return {};
+})();
