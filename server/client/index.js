@@ -13,12 +13,11 @@ const elements = {
     updatebtn: g('updatebtn'),
     saveLoader: g('saveloader'),
     npminstallbtn: g('npminstallbtn'),
-    npmpackagename: g('npmpackagename')
+    npmpackagename: g('npmpackagename'),
+    apiurl: g('apiurl')
 };
-const env = { url: `http://localhost:3000` };
 
-api.init({ elements, env }).then(async api => {
-
+api.init().then(async api => {
     const { 
         apis,
         dependencies,
@@ -28,7 +27,8 @@ api.init({ elements, env }).then(async api => {
         updatename,
         saveLoader,
         npminstallbtn,
-        npmpackagename
+        npmpackagename,
+        apiurl
     } = elements;
 
     let current = '';
@@ -80,11 +80,15 @@ api.init({ elements, env }).then(async api => {
     function unselectfile() {
         selected = '';
         codeMirror.setValue('');
+        apiurl.href = api.getUrl('');
+        apiurl.innerText = apiurl.href;
     }
 
     async function selectFile(name){
         await loadApiItem(name);
         selected = name;
+        apiurl.href = api.getUrl(selected);
+        apiurl.innerText = apiurl.href;
     }
 
     const codeMirror = CodeMirror(codeediitor, {

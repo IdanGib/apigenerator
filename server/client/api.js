@@ -1,15 +1,20 @@
 window.api = (function() {
-    const init = async config => {
+    const init = async () => {
+        return new Promise(async (resolve, reject) => {
+            const configUrl = `${location.protocol}//${location.host}/api/config`;
+            const res = await fetch(configUrl);
 
-        return new Promise((resolve, reject) => {
-            const { env } = config;
-            const { url } = env;
-            const base = `${url}/api`;
-            if(!url) {
+            const { data } = await res.json();
+            const { apiUrl } = data;
+            const base = `${apiUrl}/api`;
+            if(!apiUrl) {
                 return reject();
             }
             setTimeout(() => {
                 window.api = {
+                    getUrl: (name) => {
+                        return name ? `${apiUrl}/api/${name}` : '';
+                    },
                     list: async () => {
                         const path = `${base}/installed`;
                         const result = await fetch(path);

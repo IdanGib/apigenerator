@@ -75,6 +75,12 @@ module.exports = (express) => {
         return res.json({ data, err });
     });
 
+    router.get('/config', (req, res) => {
+        let data = config;
+        let err = null;
+        return res.json({ data, err });
+    });
+
     router.post('/installpackage', async (req, res) => {
         const { name } = req.body;
         const err = {};

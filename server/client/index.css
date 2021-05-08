@@ -8,6 +8,10 @@ body, html {
     --box-shadow: 2px 2px 20px rgba(0,0,0,0.2);
 }
 
+a {
+    margin: 4px;
+}
+
 button {
     cursor: pointer;
     border: 1px solid var(--border-color);
@@ -47,6 +51,14 @@ button, input {
     align-items: center;
     justify-content: space-evenly;
 }
+
+.app .editor-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-family: monospace;
+}
+
 .app .list {
     grid-area: list;
 }
