@@ -5,7 +5,7 @@ body, html {
     margin: 0;
     --border-radius: 8px;
     --border-color: #ccc;
-
+    --box-shadow: 2px 2px 20px rgba(0,0,0,0.2);
 }
 
 button {
@@ -83,9 +83,11 @@ button, input {
 .app .box {
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
     box-sizing: border-box;
     margin: 4px;
     padding: 6px;
+
 }
 .app .global {
     grid-area: global;

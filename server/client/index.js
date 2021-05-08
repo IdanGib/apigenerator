@@ -61,6 +61,11 @@ api.init({ elements, env }).then(async api => {
         return element;
     }
 
+    function updateSave() {
+        const changed = current !== codeMirror.getValue();
+        const action = changed ? 'removeAttribute' :  'setAttribute';
+        updatebtn[action]('disabled', '');
+    }
 
     async function save() {
         saveLoader.innerText = 'saving...';
@@ -69,6 +74,7 @@ api.init({ elements, env }).then(async api => {
         const { data, err } = await api.update(name, content);
         saveLoader.innerText = '';
         current = codeMirror.getValue();
+        updateSave();
     }
 
     function unselectfile() {
@@ -93,9 +99,7 @@ api.init({ elements, env }).then(async api => {
     });
 
     codeMirror.on('change', (cm, data) => {
-        const changed = current !== cm.getValue();
-        const action = changed ? 'removeAttribute' :  'setAttribute';
-        updatebtn[action]('disabled', '');
+        updateSave();
     });
 
     dependencies?.addEventListener('click', async event => {
