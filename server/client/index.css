@@ -20,7 +20,7 @@ button {
     padding: 4px 8px;
 }
 input {
-    text-indent: 6px;
+    text-indent: 8px;
     padding: 4px 0;
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
@@ -141,7 +141,6 @@ textarea {
     flex-grow: 1;
     width: 0;
     margin-right: 4px;
-    text-indent: 4px;
 }
 
 .app .header {
