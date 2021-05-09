@@ -12,6 +12,10 @@ window.view = (async () => {
                 button.removeAttribute('disabled');
                 return result;
             }
+        },
+        create: (containersIds) => {
+            let element = null;
+           
         }
     };
 })();
