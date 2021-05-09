@@ -72,11 +72,6 @@ window.api = (function() {
                         });
                         return await result.json();
                     },
-                    allowPackages: async () => {
-                        const path = `${base}/allow-packages`;
-                        const result = await fetch(path);
-                        return await result.json();
-                    },
                     getApiUrl: async name => {
                         const path = `${base}/url/${name}`;
                         const result = await fetch(path);
