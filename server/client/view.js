@@ -62,7 +62,9 @@ window.view = (async () => {
             return;
         }
         
-        const aList = await api.list();
+        const aListJson = await api.list();
+        const aList = aListJson?.data;
+
         const json = await api.package();
         const pList = Object.keys(json.dependencies);
 
@@ -83,12 +85,9 @@ window.view = (async () => {
             itemClass: '',
             listClass: ''
         });
-
-        const { api_url } = view.output.screen;
-     
     }
 
-    async function clickButtonHandler(action, button, api, codeEditor) {
+    const clickButtonHandler = (action, button, api, codeEditor) => {
         return async event => {
             let result = null;
             button.setAttribute('disabled', '');
@@ -101,7 +100,7 @@ window.view = (async () => {
             update(api, codeEditor);
             return result;
         }
-    }
+    };
 
     async function selectApi(event, api, codeEditor) {
         const { value } = event.target?.dataset;
@@ -110,14 +109,16 @@ window.view = (async () => {
         }
         selected = value;
         const { data } = await api.read(value);
-        codeEditor.setValue(data);
+        if(data) {
+            codeEditor.setValue(data);
+        }
     }   
 
     async function deleteApi(event, api) {
         const { api_name } = view.input.screen;
         const { value } = api_name;
         if(!value) {
-            return console.error(`[createApi] api name: ${value}`);
+            return console.error(`[deleteApi] api name: ${value}`);
         }
         const { data } = await api.delete(value);
     }
@@ -135,7 +136,7 @@ window.view = (async () => {
         const { package_name } = view.input.screen;
         const { value } = package_name;
         if(!value) {
-            return console.error(`[createApi] api name: ${value}`);
+            return console.error(`[installPackage] api name: ${value}`);
         }
         const { data } = await api.install_package(value);
     }
@@ -160,21 +161,31 @@ window.view = (async () => {
         }
     }   
 
+    const initEditor = (codeEditor, container) => {
+        codeEditor.create(container);
+        codeEditor.setChangedListener((cm, data) => {
+            
+        });
+    }
+
     function create(api, codeEditor) {
 
-        const  code = document.getElementById('code');
+        const code = document.getElementById('code');
+    
+        initEditor(codeEditor, code);
+
         const api_name = document.getElementById('api_name');
         const package_name = document.getElementById('package_name');
-        const  packages_list = document.getElementById('packages_list');
+        const packages_list = document.getElementById('packages_list');
         const api_list = document.getElementById('api_list');
         const api_url = document.getElementById('api_url');
 
-        const select_api = document.getElementById('select_api');
-        select_api.addEventListener('click', clickButtonHandler(selectApi, select_api, api, codeEditor));
+        api_list.addEventListener('click', clickButtonHandler(selectApi, api_list, api, codeEditor));
 
+        /*
         const delete_api = document.getElementById('delete_api');
         delete_api.addEventListener('click', clickButtonHandler(deleteApi, delete_api, api, codeEditor));
-
+        */
         const create_api = document.getElementById('create_api');
         create_api.addEventListener('click', clickButtonHandler(createApi, create_api, api, codeEditor));
         
@@ -190,12 +201,12 @@ window.view = (async () => {
         view = {
             input: {
                 screen: { 
-                    code, api_name,
+                    code, 
+                    api_name,
                     package_name
                 },
                 actions: { 
-                    select_api, 
-                    delete_api, 
+                   // delete_api, 
                     create_api, 
                     install_package, 
                     save_api,
@@ -212,12 +223,14 @@ window.view = (async () => {
             }
         };
 
-        update();
+
+        
+        update(api, codeEditor);
+        
+        return view;
     }
 
     return {
-        clickButtonHandler,
-        appendList,
         create
     };
-})();
+});

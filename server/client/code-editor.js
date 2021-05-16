@@ -1,8 +1,5 @@
 window.codeEditor = (async () => {
     let codeMirror = null;
-    let getValue = null;
-    let setValue = null;
-
     return {
         create: (container) => {
             codeMirror = CodeMirror(container, {
@@ -19,14 +16,14 @@ window.codeEditor = (async () => {
                     },
                 }
             });
-
-            setValue = codeMirror.setValue.bind(codeMirror);
-            getValue = codeMirror.getValue.bind(codeMirror);
-
         },
 
-        setValue,
-        getValue,
+        setValue: (value) => {
+            return codeMirror?.setValue(value);
+        },
+        getValue: () => {
+            return codeMirror?.getValue();
+        },
 
         setSaveListener: (listener) => {
             if(typeof saveListener === 'function') {
@@ -41,4 +38,4 @@ window.codeEditor = (async () => {
             codeMirror.on('change', listener);
         }
     };
-})();
+});

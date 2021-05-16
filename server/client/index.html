@@ -25,32 +25,33 @@
         <div class='list'>
             <div class="box">
                 <div class="create-api">
-                    <input id="createname" type="text" placeholder="api name" >
-                    <button id="createbtn">create</button>
+                    <input id="api_name" type="text" placeholder="api name" >
+                    <button id="create_api">create</button>
                 </div>
-                <div id="apis"></div>
+                <div id="api_list"></div>
             </div>
         </div>
         <div class='editor'>
             <div class='editor-header box'>
                 <div>
-                    <input type="text" id="updatename"  disabled>
-                    <button id="updatebtn" disabled>save</button>
-                    <span id="saveloader"></span>
+                    <input type="text" id="selected_name" disabled>
+                    <button id="save_api" disabled>save</button>
                 </div>
-                <a id="apiurl" href="" target="_blank"></a>
+                <a id="api_url" href="" target="_blank"></a>
             </div>
             <div class="code-editor box" style="padding: 0;">
-                <div id="codeediitor"></div>
+                <div id="code"></div>
             </div>
         </div>
         <div class="global">
             <div class="dependencies box">
                 <div><strong>Dependencies</strong></div>
-                <div id="dependencies"></div>
+                <div id="push_package">
+                    <div id="packages_list"></div>
+                </div>
                 <div class="npmpackage">
-                    <input type="text" placeholder="npm package" id="npmpackagename">
-                    <button id="npminstallbtn">npm install</button>
+                    <input type="text" placeholder="npm package" id="package_name">
+                    <button id="install_package">npm install</button>
                 </div>
             </div>           
         </div>
@@ -59,6 +60,7 @@
     <script src="/api.js"></script>
     <script src="/code-editor.js"></script>
     <script src="/view.js"></script>
+    <script src="/builder.js"></script>
     <script src="/index.js"></script>
 </body>
 </html>
