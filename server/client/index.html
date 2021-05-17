@@ -16,11 +16,12 @@
     <script src="lib/codemirror-5.61.0/addon/edit/closebrackets.js"></script>
     <script src="lib/codemirror-5.61.0/mode/javascript/javascript.js"></script>
 
-
-    
 </head>
 <body>
     <div class='app'>
+        <div id="user_msg" class="user-msg-container">
+            <div id="msg" class="msg"></div>
+        </div>
         <div class='header'><div class="title">API</div></div>
         <div class='list'>
             <div class="box">
@@ -54,7 +55,7 @@
                 </div>
                 <div class="npmpackage">
                     <input type="text" placeholder="npm package" id="package_name">
-                    <button id="install_package">npm install</button>
+                    <button id="install_package">install</button>
                 </div>
             </div>           
         </div>

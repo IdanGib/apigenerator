@@ -3,6 +3,7 @@ body, html {
     height: 100%;
     padding: 0;
     margin: 0;
+    position: relative;
     --border-radius: 8px;
     --border-color: #ccc;
     --box-shadow: 2px 2px 20px rgba(0,0,0,0.2);
@@ -51,12 +52,39 @@ button, input {
     grid-template-columns: 250px auto 200px;
     height: 100%;
 }
+.user-msg-container {
+    position: absolute;
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 99;
+}
+.user-msg-container.open {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.user-msg-container .msg {
+    padding: 16px;
+    background-color: #fff;
+    margin-top: 10%;
+    border-radius: var(--border-radius);
+    min-width: 256px;
+}
+
 .app .npmpackage {
     min-height: 64px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
+    padding: 10px;
+  
+}
+
+.app .npmpackage button {
+    text-transform: uppercase;
 }
 
 .app .editor-header {
@@ -124,17 +152,14 @@ button, input {
     cursor: pointer;
     transition: all 0.2s;
     border: 1px solid transparent;
-    border-radius: var(--border-radius);
 }
 
 .app .global .packages-title {
     padding: 10px;
-    border-bottom: 1px solid var(--border-color);
 }
 
 .app .global .dependencies .dep:hover {
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
 }
 
 .app .global .npm-install {
@@ -147,7 +172,7 @@ button, input {
     padding: 8px;
     flex-direction: row;
     justify-content: space-between;
-    border-bottom: 1px solid var(--border-color);
+    
 }
 
 .app .create-api input {
@@ -176,7 +201,7 @@ button, input {
     padding: 8px;
     cursor: pointer;
     margin: 6px;
-    border-left: 2px solid #ccc;
+    border-left: 2px solid var(--border-color);
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -184,9 +209,12 @@ button, input {
     transition: all 0.2s;
 }
  
- .app .list .item.selected, 
+ .app .list .item.selected {
+    border-color: transparent;
+    background: #eee;
+ }
+
  .app .list .item:hover {
     background-color: #eee;
-    border-radius: var(--border-radius);
-    border-left: 2px solid transparent;
+    border-color: transparent;
 }

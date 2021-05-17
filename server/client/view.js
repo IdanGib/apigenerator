@@ -2,7 +2,17 @@ window.view = (async () => {
 
     let view = null;
     let selected = null;
-    let api = null;
+
+    function userMessage(text, open) {
+        const { user_msg } = view.output.screen;
+        if(!user_msg) {
+            return;
+        }
+        const action = !!open ? 'add' : 'remove';
+        user_msg.classList[action]('open');
+        const msg = user_msg.querySelector('#msg');
+        msg.innerText = text;
+    }
 
     function setDisabled(button, disabled) {
         const action = disabled ?  'setAttribute' : 'removeAttribute';
@@ -169,9 +179,10 @@ window.view = (async () => {
     }
     
     async function saveApi(event, api, codeEditor) {
-        if(selected) {
+        const { value } = selected?.dataset;
+        if(value) {
             const content = codeEditor.getValue();
-            const { data } = await api.update(selected, content);
+            const { data } = await api.update(value, content);
         }
     }   
 
@@ -187,6 +198,7 @@ window.view = (async () => {
         });
     }
 
+
     function create(api, codeEditor) {
 
         const code = document.getElementById('code');
@@ -198,6 +210,13 @@ window.view = (async () => {
         const packages_list = document.getElementById('packages_list');
         const api_list = document.getElementById('api_list');
         const api_url = document.getElementById('api_url');
+        const user_msg = document.getElementById('user_msg');
+
+        user_msg.addEventListener('click', event => {
+            if(event.target.id === 'user_msg') {
+                userMessage('', false);
+            }
+        });
 
         api_list.addEventListener('click', clickButtonHandler(selectApi, api_list, api, codeEditor));
 
@@ -236,7 +255,8 @@ window.view = (async () => {
                 screen: {
                     packages_list,
                     api_list,
-                    api_url
+                    api_url,
+                    user_msg
                 },
                 actions: {}
             }
