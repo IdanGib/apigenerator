@@ -70,7 +70,7 @@ window.view = (async () => {
             list: pList,
             element: packages_list,
             attrs: { 'data-value': item => item },
-            itemClass: '',
+            itemClass: 'dep',
             listClass: ''
         });
 
@@ -79,7 +79,7 @@ window.view = (async () => {
             list: aList,
             element: api_list,
             attrs: { 'data-value': item => item },
-            itemClass: '',
+            itemClass: 'item',
             listClass: ''
         });
     }
