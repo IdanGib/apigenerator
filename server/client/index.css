@@ -105,9 +105,6 @@ button, input {
     grid-area: global;
 }
 
-textarea {
-    opacity: 0;
-}
 .app ul {
     list-style: none;
     padding: 0 4px;
@@ -116,12 +113,21 @@ textarea {
 
 .app .global .dependencies .dep {
     margin-top: 4px;
-    padding: 4px;
+    padding: 2px 8px;
     cursor: pointer;
-
+    transition: all 0.2s;
+    border: 1px solid transparent;
+    border-radius: var(--border-radius);
 }
+
+.app .global .packages-title {
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
 .app .global .dependencies .dep:hover {
-    background: #eee;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
 }
 
 .app .global .npm-install {
@@ -168,8 +174,11 @@ textarea {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    transition: all 0.2s;
 }
 
 .app .list .item:hover {
     background-color: #eee;
+    border-radius: var(--border-radius);
+    border-left: 2px solid transparent;
 }

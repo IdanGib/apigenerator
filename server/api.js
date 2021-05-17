@@ -99,7 +99,6 @@ module.exports = (express) => {
             console.error(e.message);
             err['msg'] = 'not a npm package';
         }
-        console.log({ data, err });
         return res.json({ data, err });
     });
 

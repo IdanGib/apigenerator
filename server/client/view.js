@@ -136,7 +136,7 @@ window.view = (async () => {
         if(!value) {
             return console.error(`[installPackage] api name: ${value}`);
         }
-        const { data } = await api.install_package(value);
+        const { data } = await api.install(value);
         return data;
     }
 
