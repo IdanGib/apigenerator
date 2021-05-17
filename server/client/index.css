@@ -10,6 +10,13 @@ body, html {
 
 a {
     margin: 4px;
+    transition: all 0.2s;
+}
+
+a.hide {
+    height: 0;
+    margin: 0;
+    padding: 0;
 }
 
 button {
@@ -176,8 +183,9 @@ button, input {
     justify-content: space-between;
     transition: all 0.2s;
 }
-
-.app .list .item:hover {
+ 
+ .app .list .item.selected, 
+ .app .list .item:hover {
     background-color: #eee;
     border-radius: var(--border-radius);
     border-left: 2px solid transparent;

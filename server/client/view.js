@@ -1,7 +1,7 @@
 window.view = (async () => {
 
     let view = null;
-    let selected = '';
+    let selected = null;
     let api = null;
 
     function setDisabled(button, disabled) {
@@ -36,21 +36,25 @@ window.view = (async () => {
         return element;
     }
 
+    function updateUrl(name, api) {
+        if(!api_url) {
+            return;
+        }
+        const apiUrl = api.getUrl(name);
+        api_url.innerText = apiUrl;
+        api_url.href = apiUrl;
+    }
+
     async function update(api, codeEditor) {
         const { save_api } = view.input.actions;
 
         if(selected) {
-            const { data } = await api.read(selected);
+            const { value } = selected.dataset;
+            const { data } = await api.read(value);
             const changed = data !== codeEditor.getValue();
             setDisabled(save_api, !changed);
         } else {
             setDisabled(save_api, true);
-        }
-
-        if(api_url) {
-            const apiUrl = api.getUrl(selected || '');
-            api_url.innerText = apiUrl;
-            api_url.href = apiUrl;
         }
 
         const {  packages_list, api_list } = view.output.screen;
@@ -82,6 +86,13 @@ window.view = (async () => {
             itemClass: 'item',
             listClass: ''
         });
+
+        api_list.querySelectorAll(".item").forEach(element => {
+            const itemValue = element.dataset.value;
+            const selectedValue = selected?.dataset.value;
+            const action = (itemValue === selectedValue) ? 'add' : 'remove';
+            element.classList[action]('selected');
+        });
     }
 
     const clickButtonHandler = (action, button, api, codeEditor) => {
@@ -104,12 +115,16 @@ window.view = (async () => {
         if(!value) {
             return console.error(`[selectApi] name: ${value}`);
         }
-        selected = value;
+        
         const { data } = await api.read(value);
+
         if(data) {
             codeEditor.setValue(data);
             selected_name.value = value;
+            selected = event.target;
+            updateUrl(value, api);
         }
+        
     }   
 
     async function deleteApi(event, api) {
