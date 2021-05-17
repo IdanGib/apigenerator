@@ -4,8 +4,8 @@ window.view = (async () => {
     let selected = '';
     let api = null;
 
-    function setEnabled(button, enabled) {
-        const action = enabled ? 'removeAttribute' :  'setAttribute';
+    function setDisabled(button, disabled) {
+        const action = disabled ?  'setAttribute' : 'removeAttribute';
         button[action]('disabled', '');
     }
 
@@ -42,9 +42,9 @@ window.view = (async () => {
         if(selected) {
             const { data } = await api.read(selected);
             const changed = data !== codeEditor.getValue();
-            setEnabled(save_api, changed);
+            setDisabled(save_api, !changed);
         } else {
-            setEnabled(save_api, false);
+            setDisabled(save_api, true);
         }
 
         if(api_url) {
@@ -87,13 +87,13 @@ window.view = (async () => {
     const clickButtonHandler = (action, button, api, codeEditor) => {
         return async event => {
             let result = null;
-            setEnabled(button, true);
+            setDisabled(button, true);
             try {
                 result = await action(event, api, codeEditor);
             } catch(e) {
                 console.error(e);
             }
-            setEnabled(button, false);
+            setDisabled(button, false);
             update(api, codeEditor);
             return result;
         }
@@ -137,6 +137,7 @@ window.view = (async () => {
             return console.error(`[installPackage] api name: ${value}`);
         }
         const { data } = await api.install_package(value);
+        return data;
     }
 
     async function pushPackage(event, api, codeEditor) {
