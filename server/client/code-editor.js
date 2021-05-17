@@ -1,5 +1,6 @@
 window.codeEditor = (async () => {
     let codeMirror = null;
+    let saveListener = null;
     return {
         create: (container) => {
             codeMirror = CodeMirror(container, {
@@ -26,7 +27,7 @@ window.codeEditor = (async () => {
         },
 
         setSaveListener: (listener) => {
-            if(typeof saveListener === 'function') {
+            if(typeof listener === 'function') {
                 saveListener = listener;
             }
         },

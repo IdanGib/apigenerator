@@ -2,6 +2,12 @@ window.view = (async () => {
 
     let view = null;
     let selected = '';
+    let api = null;
+
+    function setEnabled(button, enabled) {
+        const action = enabled ? 'removeAttribute' :  'setAttribute';
+        button[action]('disabled', '');
+    }
 
     function appendList({ element, list, itemClass, listClass, attrs }) {
         if(element) {
@@ -31,23 +37,14 @@ window.view = (async () => {
     }
 
     async function update(api, codeEditor) {
-        const { save_api } = view.input.screen;
+        const { save_api } = view.input.actions;
 
         if(selected) {
             const { data } = await api.read(selected);
             const changed = data !== codeEditor.getValue();
-            const action = changed ? 'removeAttribute' :  'setAttribute';
-            
-            if(save_api) {
-                save_api[action]('disabled', '');
-            }
-
+            setEnabled(save_api, changed);
         } else {
-
-            if(save_api) {
-                save_api.removeAttribute('disabled');
-            }
-
+            setEnabled(save_api, false);
         }
 
         if(api_url) {
@@ -90,13 +87,13 @@ window.view = (async () => {
     const clickButtonHandler = (action, button, api, codeEditor) => {
         return async event => {
             let result = null;
-            button.setAttribute('disabled', '');
+            setEnabled(button, true);
             try {
                 result = await action(event, api, codeEditor);
             } catch(e) {
                 console.error(e);
             }
-            button.removeAttribute('disabled');
+            setEnabled(button, false);
             update(api, codeEditor);
             return result;
         }
@@ -111,6 +108,7 @@ window.view = (async () => {
         const { data } = await api.read(value);
         if(data) {
             codeEditor.setValue(data);
+            selected_name.value = value;
         }
     }   
 
@@ -147,7 +145,7 @@ window.view = (async () => {
             return console.error(`[${pushPackage}] value: ${value}`);
         }
         const content = codeEditor.getValue();
-        const varname = package.replaceAll('-', '_');
+        const varname = value.replaceAll('-', '_');
         const canAdd = content && (!content.includes(`require('${value}')`));
         if(canAdd) {
             codeEditor.setValue( `const ${varname} = require('${value}');\n${content}`);
@@ -161,10 +159,15 @@ window.view = (async () => {
         }
     }   
 
-    const initEditor = (codeEditor, container) => {
+    const initEditor = (api, codeEditor, container) => {
         codeEditor.create(container);
         codeEditor.setChangedListener((cm, data) => {
-            
+           update(api, codeEditor);        
+        });
+        const { save_api } = view.input.actions;
+        codeEditor.setSaveListener(value => {
+            console.log('save:', value);
+            save_api.click();
         });
     }
 
@@ -172,7 +175,7 @@ window.view = (async () => {
 
         const code = document.getElementById('code');
     
-        initEditor(codeEditor, code);
+
 
         const api_name = document.getElementById('api_name');
         const package_name = document.getElementById('package_name');
@@ -224,7 +227,7 @@ window.view = (async () => {
         };
 
 
-        
+        initEditor(api, codeEditor, code);
         update(api, codeEditor);
         
         return view;
