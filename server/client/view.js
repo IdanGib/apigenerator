@@ -1,4 +1,47 @@
+
 window.view = (async () => {
+    class Menu {
+        element;
+        menu = [];
+
+        constructor(id) {
+            this.element = document.getElementById(id);
+            window.addEventListener('click', event => {
+                if(!event.path.includes(this.element)) {
+                    this.element.classList.remove('show');
+                } 
+            });
+            this.element.addEventListener('click', event => {
+                console.log('menu item', event.target);
+            });
+
+            window.oncontextmenu = event => {
+                const { hasmenu } = event.target.dataset;
+                if(!hasmenu) {
+                    return;
+                }
+                this.element.classList.add('show');
+                const x = event.clientX;
+                const y = event.clientY;
+                this.element.style.top = `${y}px`;
+                this.element.style.left = `${x}px`;
+                this.createView(this.element, [ { display: hasmenu } ]);
+                event.preventDefault();
+            }
+        }
+
+        createView(element, items) {
+            element.innerHTML = '';
+            for(const m of items) {
+                const me = document.createElement('div');
+                me.innerText = m.display;
+                element.appendChild(me);
+            }
+        }
+
+    }
+
+    const menu = new Menu('menu');
 
     let view = null;
     let selected = null;
@@ -83,7 +126,9 @@ window.view = (async () => {
         appendList({
             list: pList,
             element: packages_list,
-            attrs: { 'data-value': item => item },
+            attrs: { 
+                'data-value': item => item
+            },
             itemClass: 'dep',
             listClass: ''
         });
@@ -92,7 +137,10 @@ window.view = (async () => {
         appendList({
             list: aList,
             element: api_list,
-            attrs: { 'data-value': item => item },
+            attrs: { 
+                'data-value': item => item,
+                'data-hasmenu': item => item  
+            },
             itemClass: 'item',
             listClass: ''
         });
