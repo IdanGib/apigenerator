@@ -66,14 +66,23 @@ button, input {
     align-items: center;
 }
 #menu {
-    display: none;
+    width: 0;
+    height: 0;
+    display: block;
+    transform: scale(0);
+    transform-origin: left;
     position: absolute;
     z-index: 99;
     background-color: #fff;
     cursor: pointer;
+    opacity: 0;
+    transition: transform 100ms;
 }
 #menu.show {
-    display: block;
+    width: initial;
+    height: initial;
+    transform: scale(1);
+    opacity: 1;
 }
 .user-msg-container .msg {
     padding: 16px;

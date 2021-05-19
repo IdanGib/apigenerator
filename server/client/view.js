@@ -1,48 +1,89 @@
 
 window.view = (async () => {
     class Menu {
+        menuListener;
         element;
-        menu = [];
+        menu = {};
 
         constructor(id) {
             this.element = document.getElementById(id);
             window.addEventListener('click', event => {
                 if(!event.path.includes(this.element)) {
                     this.element.classList.remove('show');
-                } 
+                }
             });
-            this.element.addEventListener('click', event => {
-                console.log('menu item', event.target);
+
+            this.element.addEventListener('click', async event => {
+                const { display, value } = event.target.dataset;
+                if(!display || !value) {
+                    return;
+                }
+                if(this.menuListener) {
+                    this.menuListener({ display, value });
+                }
             });
 
             window.oncontextmenu = event => {
-                const { hasmenu } = event.target.dataset;
-                if(!hasmenu) {
+                const { hasmenu, entity, value } = event.target.dataset;
+                if(!hasmenu || !entity || !value) {
+                    this.element.classList.remove('show');
                     return;
                 }
-                this.element.classList.add('show');
+                
                 const x = event.clientX;
                 const y = event.clientY;
                 this.element.style.top = `${y}px`;
                 this.element.style.left = `${x}px`;
-                this.createView(this.element, [ { display: hasmenu } ]);
+                this.createView(this.element, this.menu[entity], value);
+                
+                if(this.element.childNodes.length > 0) {
+                    this.element.classList.add('show');
+                }
+
                 event.preventDefault();
             }
         }
 
-        createView(element, items) {
+        createView(element, items, value) {
+            if(!items || !value || !element) {
+                return;
+            }
             element.innerHTML = '';
             for(const m of items) {
-                const me = document.createElement('div');
+                const me = document.createElement('button');
+                me.setAttribute('data-display', m.display);
+                me.setAttribute('data-value', value);
                 me.innerText = m.display;
                 element.appendChild(me);
             }
         }
 
+        setMenuActionListener(listener) {
+            if(typeof listener === 'function') {
+                this.menuListener = listener;
+            }
+        }
+
+        addMenuItem(key, value) {
+            this.menu[key] = value;
+        }
+        removeMenuItem(key) {
+            console.log(this.menu);
+            delete this.menu[key];
+            this.element.innerHTML = null;
+            console.log(this.menu);
+        }
     }
 
     const menu = new Menu('menu');
-
+    menu.addMenuItem("apiitem", [
+        { display: 'delete' },
+        { display: 'test' }
+    ]);
+    setTimeout(() => {
+        menu.removeMenuItem('apiitem');
+    }, 3000);
+    
     let view = null;
     let selected = null;
 
@@ -139,7 +180,8 @@ window.view = (async () => {
             element: api_list,
             attrs: { 
                 'data-value': item => item,
-                'data-hasmenu': item => item  
+                'data-hasmenu': item => item,
+                'data-entity': item => 'apiitem' 
             },
             itemClass: 'item',
             listClass: ''
