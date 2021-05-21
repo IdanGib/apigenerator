@@ -49,7 +49,7 @@ module.exports = (express) => {
             return res.json({ err: 'no name', data: false });
         }
         const data = apiFiles.remove(name);
-        return res.json({ err: '', data });
+        return res.json({ err: '', data: true });
     });
 
 

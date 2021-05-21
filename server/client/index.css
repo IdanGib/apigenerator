@@ -78,6 +78,10 @@ button, input {
     opacity: 0;
     transition: transform 100ms;
 }
+#menu > .m-item {
+    display: block;
+    margin: 2px;
+}
 #menu.show {
     width: initial;
     height: initial;

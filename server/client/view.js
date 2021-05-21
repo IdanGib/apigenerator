@@ -14,18 +14,15 @@ window.view = (async () => {
             });
 
             this.element.addEventListener('click', async event => {
-                const { display, value } = event.target.dataset;
-                if(!display || !value) {
-                    return;
-                }
+                const { dataset } = event.target;
                 if(this.menuListener) {
-                    this.menuListener({ display, value });
+                    this.menuListener(dataset, event.target);
                 }
             });
 
             window.oncontextmenu = event => {
-                const { hasmenu, entity, value } = event.target.dataset;
-                if(!hasmenu || !entity || !value) {
+                const { hasmenu, menukey, value } = event.target.dataset;
+                if(!hasmenu || !menukey || !value) {
                     this.element.classList.remove('show');
                     return;
                 }
@@ -34,7 +31,8 @@ window.view = (async () => {
                 const y = event.clientY;
                 this.element.style.top = `${y}px`;
                 this.element.style.left = `${x}px`;
-                this.createView(this.element, this.menu[entity], value);
+                const items = this.menu[menukey];
+                this.createView(this.element, items , value);
                 
                 if(this.element.childNodes.length > 0) {
                     this.element.classList.add('show');
@@ -51,8 +49,15 @@ window.view = (async () => {
             element.innerHTML = '';
             for(const m of items) {
                 const me = document.createElement('button');
-                me.setAttribute('data-display', m.display);
+                me.classList.add('m-item');
+                for(const  k in m) {
+                    if(k) {
+                        me.setAttribute('data-' + k, m[k]);
+                    }
+                }
+                
                 me.setAttribute('data-value', value);
+
                 me.innerText = m.display;
                 element.appendChild(me);
             }
@@ -68,22 +73,13 @@ window.view = (async () => {
             this.menu[key] = value;
         }
         removeMenuItem(key) {
-            console.log(this.menu);
             delete this.menu[key];
             this.element.innerHTML = null;
-            console.log(this.menu);
         }
     }
 
-    const menu = new Menu('menu');
-    menu.addMenuItem("apiitem", [
-        { display: 'delete' },
-        { display: 'test' }
-    ]);
-    setTimeout(() => {
-        menu.removeMenuItem('apiitem');
-    }, 3000);
-    
+
+
     let view = null;
     let selected = null;
 
@@ -140,14 +136,16 @@ window.view = (async () => {
     }
 
     async function update(api, codeEditor) {
-        const { save_api } = view.input.actions;
-
+        const { save_api, delete_api } = view.input.actions;
+        
         if(selected) {
             const { value } = selected.dataset;
             const { data } = await api.read(value);
             const changed = data !== codeEditor.getValue();
             setDisabled(save_api, !changed);
+            setDisabled(delete_api, false);
         } else {
+            setDisabled(delete_api, true);
             setDisabled(save_api, true);
         }
 
@@ -181,18 +179,27 @@ window.view = (async () => {
             attrs: { 
                 'data-value': item => item,
                 'data-hasmenu': item => item,
-                'data-entity': item => 'apiitem' 
+                'data-menukey': item => 'apiitem' 
             },
             itemClass: 'item',
             listClass: ''
         });
 
-        api_list.querySelectorAll(".item").forEach(element => {
+        const apiListItems = Array.from(api_list.querySelectorAll(".item"));
+        
+        apiListItems.forEach(element => {
             const itemValue = element.dataset.value;
             const selectedValue = selected?.dataset.value;
             const action = (itemValue === selectedValue) ? 'add' : 'remove';
             element.classList[action]('selected');
         });
+
+        if(!selected) {
+            selected_name.value = '';
+            api_url.innerText = '';
+            api_url.href = '';
+            codeEditor.setValue('');
+        }
     }
 
     const clickButtonHandler = (action, button, api, codeEditor) => {
@@ -228,12 +235,15 @@ window.view = (async () => {
     }   
 
     async function deleteApi(event, api) {
-        const { api_name } = view.input.screen;
-        const { value } = api_name;
+        const { value } = selected?.dataset;
         if(!value) {
             return console.error(`[deleteApi] api name: ${value}`);
         }
         const { data } = await api.delete(value);
+        if(data) {
+            selected = null;
+        }
+
     }
 
     async function createApi(event, api) {
@@ -243,6 +253,7 @@ window.view = (async () => {
             return console.error(`[createApi] api name: ${value}`);
         }
         const { data } = await api.create(value);
+        api_name.value = '';
     }
 
     async function installPackage(event, api) {
@@ -283,13 +294,42 @@ window.view = (async () => {
         });
         const { save_api } = view.input.actions;
         codeEditor.setSaveListener(value => {
-            console.log('save:', value);
             save_api.click();
         });
     }
 
+    const initMenu = (api, codeEditor) => {
+        const menu = new Menu('menu');
+            
+        const menuActionsMap = {};
+    
+        menuActionsMap['i1'] = async (dataset, target) => {
+            console.log(dataset, target);
+        };
+
+        menuActionsMap['i2'] = async (dataset, target) => {
+            console.log(dataset, target);
+        };
+
+        menuActionsMap['i3'] = async (dataset, target) => {
+            console.log(dataset, target);
+        };
+
+        menu.addMenuItem("apiitem", [
+            { display: 'item 1', id: 'i1' },
+            { display: 'item 2', id: 'i2' },
+            { display: 'item 3', id: 'i3' }
+        ]);
+
+        menu.setMenuActionListener((dataset, target) => {
+            const { id } = dataset;
+            menuActionsMap[id](dataset, target);
+        });
+    }
 
     function create(api, codeEditor) {
+
+
 
         const code = document.getElementById('code');
     
@@ -310,13 +350,12 @@ window.view = (async () => {
 
         api_list.addEventListener('click', clickButtonHandler(selectApi, api_list, api, codeEditor));
 
-        /*
-        const delete_api = document.getElementById('delete_api');
-        delete_api.addEventListener('click', clickButtonHandler(deleteApi, delete_api, api, codeEditor));
-        */
         const create_api = document.getElementById('create_api');
         create_api.addEventListener('click', clickButtonHandler(createApi, create_api, api, codeEditor));
         
+        const delete_api = document.getElementById('delete_api');
+        delete_api.addEventListener('click', clickButtonHandler(deleteApi, delete_api, api, codeEditor));
+
         const install_package = document.getElementById('install_package');
         install_package.addEventListener('click', clickButtonHandler(installPackage, install_package, api, codeEditor));
 
@@ -338,6 +377,7 @@ window.view = (async () => {
                     create_api, 
                     install_package, 
                     save_api,
+                    delete_api,
                     push_package
                 }   
             },
@@ -352,7 +392,7 @@ window.view = (async () => {
             }
         };
 
-
+        initMenu(api, codeEditor);
         initEditor(api, codeEditor, code);
         update(api, codeEditor);
         
