@@ -126,6 +126,14 @@ window.view = (async () => {
         return element;
     }
 
+    function clearEditor(codeEditor) {
+        
+        selected_name.value = '';
+        api_url.innerText = '';
+        api_url.href = '';
+        codeEditor.setValue('');
+    }
+
     function updateUrl(name, api) {
         if(!api_url) {
             return;
@@ -195,10 +203,7 @@ window.view = (async () => {
         });
 
         if(!selected) {
-            selected_name.value = '';
-            api_url.innerText = '';
-            api_url.href = '';
-            codeEditor.setValue('');
+            clearEditor(codeEditor);
         }
     }
 
@@ -222,7 +227,10 @@ window.view = (async () => {
         if(!value) {
             return console.error(`[selectApi] name: ${value}`);
         }
-        
+        if(selected_name.value === value) {
+            selected = null;
+            return;
+        }
         const { data } = await api.read(value);
 
         if(data) {
@@ -328,13 +336,7 @@ window.view = (async () => {
     }
 
     function create(api, codeEditor) {
-
-
-
         const code = document.getElementById('code');
-    
-
-
         const api_name = document.getElementById('api_name');
         const package_name = document.getElementById('package_name');
         const packages_list = document.getElementById('packages_list');
@@ -373,7 +375,6 @@ window.view = (async () => {
                     package_name
                 },
                 actions: { 
-                   // delete_api, 
                     create_api, 
                     install_package, 
                     save_api,
