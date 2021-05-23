@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node .",
-    "dev": "nodemon --ignore ./package.json --ignore ./package-lock.json"
+    "start": "nodemon --ignore ./package.json --ignore ./package-lock.json"
   },
   "keywords": [],
   "author": "",

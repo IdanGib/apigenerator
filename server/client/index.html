@@ -18,7 +18,15 @@
 
 </head>
 <body>
-
+    <script>
+        const mode = new URL(location).searchParams.get('mode');
+        if(mode !== 'debug') {
+            console.log = () => {};
+            console.error = () => {};
+            console.info = () => {};
+            console.warn = () => {};
+        }
+    </script>
     <div class='app'>
         <div id="menu" class="box"></div>
         <div id="user_msg" class="user-msg-container">
