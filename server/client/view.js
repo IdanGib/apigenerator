@@ -243,7 +243,13 @@ window.view = (async () => {
     }   
 
     async function deleteApi(event, api) {
+        
+
         const { value } = selected?.dataset;
+        const ans = confirm(`You sure you whant to delete '${value}' api ?`);
+        if(!ans) {
+            return;
+        }
         if(!value) {
             return console.error(`[deleteApi] api name: ${value}`);
         }
@@ -251,7 +257,6 @@ window.view = (async () => {
         if(data) {
             selected = null;
         }
-
     }
 
     async function createApi(event, api) {
