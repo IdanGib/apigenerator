@@ -1,5 +1,8 @@
 
 window.view = (async () => {
+    let view = null;
+    let selected = null;
+
     class Menu {
         menuListener;
         element;
@@ -77,11 +80,6 @@ window.view = (async () => {
             this.element.innerHTML = null;
         }
     }
-
-
-
-    let view = null;
-    let selected = null;
 
     function userMessage(text, open) {
         const { user_msg } = view.output.screen;
@@ -276,6 +274,22 @@ window.view = (async () => {
             return console.error(`[installPackage] api name: ${value}`);
         }
         const { data } = await api.install(value);
+        return data;
+    }
+
+    async function uninstallPackage(event, api) {
+
+        const { package_name } = view.input.screen;
+        const { value } = package_name;
+
+        const canRemove = confirm(`uninstall ${value} package ?`);
+        if(!canRemove) {
+            return console.error(`[uninstallPackage] ${value} user reject`);
+        }
+        if(!value) {
+            return console.error(`[uninstallPackage] api name: ${value}`);
+        }
+        const { data } = await api.uninstall(value);
         return data;
     }
 

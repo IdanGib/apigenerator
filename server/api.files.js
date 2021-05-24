@@ -4,6 +4,15 @@ module.exports = class ApiFiles {
     static apiPath = `${__dirname}/api`;
     static templatesPath = `${__dirname}/templates/api.template`;
     
+    static readPackageFile() {
+        const path = `${__dirname}/package.json`;
+        if(!fs.existsSync(path)) {
+            console.error(`[read] ${path} not exsits`);
+            return null;
+        }
+        return fs.readFileSync(path).toString();
+    }
+
     static exists(path) {
         const check = `${this.apiPath}${path ? '/' + path + '.js' : ''}`;
         return fs.existsSync(check);

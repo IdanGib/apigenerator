@@ -102,5 +102,26 @@ module.exports = (express) => {
         return res.json({ data, err });
     });
 
+    router.post('/uninstallpackage', async (req, res) => {
+        const { name } = req.body;
+        const err = {};
+        let data = null;
+        try {
+            const pf = JSON.parse(apiFiles.readPackageFile());
+            const packages = Object.keys(pf);
+            const exists = packages.some(p => p === name);
+            const not_protected = config.protected_packages.every(p => p !== name);
+            if(exists && not_protected) {
+                const command =  `npm uninstall --save ${name}`;
+                const { output } = child_process.spawnSync(command, { cwd: `${__dirname}`, shell: true });
+                data = output.map(o => o?.toString()).filter(Boolean);
+            }
+        } catch(e) {
+            console.error(e.message);
+            err['msg'] = 'not a npm package';
+        }
+        return res.json({ data, err });
+    });
+
     return router;
 }

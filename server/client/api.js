@@ -56,6 +56,17 @@ window.api = (async () => {
             const result = await fetch(path);
             return await result.json();
         },
+        uninstall: async (name) => {
+            const path = `${base}/uninstallpackage`;
+            const result = await fetch(path, { 
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                method: 'post',
+                body: JSON.stringify({ name })
+            });
+            return await result.json();
+        },
         install: async (name) => {
             const path = `${base}/installpackage`;
             const result = await fetch(path, { 
