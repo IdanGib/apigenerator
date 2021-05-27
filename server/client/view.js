@@ -201,7 +201,7 @@ window.view = (async () => {
         });
 
         if(!selected) {
-            clearEditor(codeEditor);
+            // clearEditor(codeEditor);
         }
     }
 
@@ -225,10 +225,13 @@ window.view = (async () => {
         if(!value) {
             return console.error(`[selectApi] name: ${value}`);
         }
+
         if(selected_name.value === value) {
             selected = null;
+            clearEditor(codeEditor);
             return;
         }
+
         const { data } = await api.read(value);
 
         if(data) {
