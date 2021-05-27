@@ -7,6 +7,7 @@ body, html {
     --border-radius: 8px;
     --border-color: #ccc;
     --box-shadow: 2px 2px 20px rgba(0,0,0,0.2);
+    --box-shadow-flat: 1px 1px 2px rgba(0,0,0,0);
 }
 
 a {
@@ -47,7 +48,7 @@ button, input {
     grid-template-areas:    'header header header'
                             'list editor global'
                             'footer footer footer';
-    grid-template-rows: 50px auto 50px;
+    grid-template-rows: 50px auto 64px;
     grid-template-columns: 250px auto 200px;
     height: 100%;
 }
@@ -64,6 +65,19 @@ button, input {
     flex-direction: column;
     align-items: center;
 }
+#myVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+}
+
+audio {
+    height: 32px;
+}
+
 #menu {
     width: 0;
     height: 0;
@@ -156,7 +170,15 @@ button, input {
     box-sizing: border-box;
     margin: 4px;
     padding: 6px;
-
+    background-color: white;
+}
+.app .box-flat {
+    border-radius: var(--border-radius);
+    box-sizing: border-box;
+    box-shadow: var(--box-shadow-flat);
+    margin: 4px;
+    padding: 6px;
+    background-color: white;
 }
 .app .global {
     grid-area: global;
@@ -209,13 +231,16 @@ button, input {
 .app .header .title {
     text-align: center;
     font-size: 24px;
-    line-height: 50px;
-    height: 50px;
     margin: auto;
 }
 
 .app .footer {
     grid-area: footer;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 
 .app .list .item {
